@@ -6,6 +6,7 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [redirected, setRedirected] = useState(false); // Estado para controlar la redirección
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -48,6 +49,8 @@ const Login = () => {
           console.log('Usuario con rol no definido inició sesión');
           // Redirigir a la página principal por defecto si el rol no está definido
         }
+        // Marcar que se ha redirigido
+        setRedirected(true);
       } else {
         console.log('No se encontró el campo "roles" en el token de usuario');
       }
@@ -58,20 +61,21 @@ const Login = () => {
     }
   };
 
+  // Mostrar el mensaje de error solo si no se ha redirigido
   return (
-    <div>
-      <h2>Iniciar Sesión</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Email:</label>
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+    <div className="login-container">
+      <form className="login-form" onSubmit={handleSubmit}>
+        <div id='formulario-login' style={{ textAlign: 'left' }}>
+          <h1 className="login-title">Iniciar Sesión</h1>
+          <div className="form-group">
+            <input className='campo-texto' type="email" id="email" placeholder='Email' value={email} onChange={(e) => setEmail(e.target.value)} />
+          </div>
+          <div className="form-group">
+            <input className='campo-texto' type="password" id="password" placeholder='Contraseña' value={password} onChange={(e) => setPassword(e.target.value)} />
+          </div>
+          {error && !redirected && <p id="error-message" className="error-message">{error}</p>} {/* Mostrar el mensaje solo si no se ha redirigido */}
+          <button type="submit" className="login-button">Iniciar Sesión</button>
         </div>
-        <div>
-          <label>Contraseña:</label>
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-        </div>
-        <button type="submit">Iniciar Sesión</button>
       </form>
     </div>
   );

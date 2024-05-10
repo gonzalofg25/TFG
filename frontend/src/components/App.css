@@ -1,38 +1,161 @@
-.App {
-  text-align: center;
+@font-face {
+  font-family: 'Josefins';
+  src: url('../resources/JosefinSans-SemiBold.ttf') format('truetype');
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+
+#registro-container {
+  font-family: 'Josefins',serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+#registro-formulario {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 500px;
+  height: 500px;
+  background: rgb(109,142,170);
+background: linear-gradient(36deg, rgba(109,142,170,1) 50%, rgba(33,3,221,1) 100%);
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  border-radius: 10%;
+}
+
+#formulario{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 300px;
+}
+
+#registro-formulario h1 {
+  margin-bottom: 33px;
+  text-align: center;
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+#registro-formulario input[type="text"],
+#registro-formulario input[type="email"],
+#registro-formulario input[type="password"],
+
+.campo-texto{
+  margin-bottom: 20px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.campo-texto,.submit-button,.login-button {
+  margin-bottom: 10px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid rgb(0, 0, 0);
+  width: 100%;
+  box-sizing: border-box;
 }
+
+#registro-formulario div {
+  margin-bottom: 20px;
+}
+
+#registro-formulario div label {
+  margin-right: 10px;
+}
+
+.submit-button {
+  border: 1px solid rgb(0, 0, 0);
+  cursor: pointer;
+  background-color: #6B695C;
+  color: white;
+  font-size: medium;
+}
+
+.submit-button:hover {
+  background-color: #8a8778;
+}
+
+.error-message{
+  color: rgb(148, 0, 0);
+}
+
+#enlace{
+  text-decoration: none;
+  color: #ffb236;
+}
+
+#enlace:hover{
+  color: #f19706;
+}
+
+/*-------------------------------------------------------------------------------------------------------------*/
+
+/* Estilos para el contenedor principal */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  font-family: 'Josefins',serif;
+}
+
+.login-form{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 500px;
+  height: 500px;
+  background: rgb(109,142,170);
+  background: linear-gradient(36deg, rgba(109,142,170,1) 50%, rgba(33,3,221,1) 100%);
+  justify-content: center;
+  border-radius: 10%;
+}
+
+#formulario-login{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 300px;
+}
+
+/* Estilos para el título */
+.login-title {
+  font-size: 33px;
+  margin-bottom: 33px;
+  color: white;
+}
+
+.form-group{
+  margin-bottom: 16px;
+}
+
+.login-button{
+  border: 1px solid rgb(0, 0, 0);
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  font-size: medium;
+}
+
+.login-button:hover{
+  background-color: #023e7e;
+}
+
+.form-group input{
+  width: 300px;
+}
+
+.back-button {
+  text-align: left;
+  margin-right: 100%;
+  background-color: red;
+  color: white;
+  font-size: 18px;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 10px; /* Ajusta el margen según sea necesario */
+}
+

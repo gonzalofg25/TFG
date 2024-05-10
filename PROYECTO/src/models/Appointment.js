@@ -19,7 +19,8 @@ const appointmentSchema = new Schema({
   },
   date: {
     type: Date,
-    required: true
+    required: true,
+    format: '%Y-%m-%dT%H:%M'
   },
   description: {
     type: String,

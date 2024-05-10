@@ -62,30 +62,31 @@ function SignUpForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h1>Registro</h1>
-      <input type="text" name="username" placeholder="Nombre de usuario" onChange={handleChange} />
-      <input type="email" name="email" placeholder="Correo electrónico" onChange={handleChange} />
-      <input type="password" name="password" placeholder="Contraseña" onChange={handleChange} />
-      <div>
-        <label>
-          <input type="checkbox" name="roles" value="cliente" onChange={handleCheckboxChange} />
-          Cliente
-        </label>
-        <label>
-          <input type="checkbox" name="roles" value="barbero" onChange={handleCheckboxChange} />
-          Barbero
-        </label>
-        <label>
-          <input type="checkbox" name="roles" value="admin" onChange={handleCheckboxChange} />
-          Administrador
-        </label>
-      </div>
-      {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
-      <button type="submit">Registrarse</button>
-      {/* Enlace para ir a la página de inicio de sesión */}
-      <p>¿Ya tienes una cuenta? <Link to="/login">Iniciar sesión</Link></p>
-    </form>
+    <div id="registro-container">
+  <form id="registro-formulario" onSubmit={handleSubmit}>
+    <div id='formulario'>
+    <h1>Registro</h1>
+    <input className="campo-texto" type="text" name="username" placeholder="Nombre de usuario" onChange={handleChange} />
+    <input className="campo-texto" type="email" name="email" placeholder="Correo electrónico" onChange={handleChange} />
+    <input className="campo-texto" type="password" name="password" placeholder="Contraseña" onChange={handleChange} />
+    <div className="roles-container">
+      <label>
+        <input type="checkbox" name="roles" value="cliente" onChange={handleCheckboxChange} />
+        Cliente
+      </label>
+      <label>
+        <input type="checkbox" name="roles" value="barbero" onChange={handleCheckboxChange} />
+        Barbero
+      </label>
+    </div>
+    {errorMessage && <p className="error-message">{errorMessage}</p>}
+    <button className="submit-button" type="submit">Registrarse</button>
+    {/* Enlace para ir a la página de inicio de sesión */}
+    <p>¿Ya tienes una cuenta? <Link to="/login" id='enlace'>Iniciar sesión</Link></p>
+    </div>
+  </form>
+</div>
+
   );
 }
 
