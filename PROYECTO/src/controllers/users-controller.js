@@ -1,5 +1,4 @@
 import User from '../models/User.js';
-import jwt from 'jsonwebtoken';
 import { getUsers,getClientes,getBarberos,deleteUserByUsername } from '../services/user-db-services.js';
 
 export async function listarBarberos(req, res) {
@@ -25,33 +24,40 @@ export async function listarClientes(req, res) {
 export async function modificarUsuario(req, res) {
   try {
     const { username, email, password } = req.body;
+    const usuarioAutenticado = req.user;
 
-    if (!username || !email || !password) {
-      return res.status(400).json({ message: "Se requieren el nombre de usuario, correo electrónico y contraseña para la modificación" });
+    // Verificar si hay un usuario autenticado
+    if (!usuarioAutenticado) {
+      console.error("No se pudo obtener el usuario autenticado");
+      return res.status(401).json({ message: "No se pudo obtener el usuario autenticado" });
     }
 
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: "El correo electrónico ya está en uso" });
-    }
-
+    // Si se proporciona una contraseña, encriptarla
     let hashedPassword;
     if (password) {
       hashedPassword = await User.encryptPassword(password);
     }
 
-    const updatedUser = await User.findByIdAndUpdate(req.params.userId, {
+    // Actualizar la información del usuario
+    const updatedUser = await User.findByIdAndUpdate(usuarioAutenticado._id, {
       username,
       email,
       password: hashedPassword
     }, { new: true });
 
+    if (!updatedUser) {
+      console.error("No se pudo actualizar el usuario");
+      return res.status(500).json({ message: "No se pudo actualizar el usuario" });
+    }
+
+    console.log("Usuario actualizado correctamente:", updatedUser);
     return res.status(200).json({ message: "Usuario actualizado correctamente", user: updatedUser });
   } catch (error) {
     console.error("Error al modificar usuario:", error);
     return res.status(500).json({ message: "Error interno del servidor" });
   }
 }
+
 
 export async function mostrarUsuariosAdmin(req, res) {
   try {

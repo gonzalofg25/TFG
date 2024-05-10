@@ -43,7 +43,7 @@ const Login = () => {
           // Redirigir a la página del barbero
         } else if (userRoles.includes('admin')) {
           console.log('Usuario administrador inició sesión');
-          // Redirigir a la página de administrador
+          window.location.href = `/admin/${username}`;
         } else {
           console.log('Usuario con rol no definido inició sesión');
           // Redirigir a la página principal por defecto si el rol no está definido
