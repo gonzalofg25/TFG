@@ -3,7 +3,6 @@ import Appointment from '../models/Appointment.js';
 export const appointmentService = {
   createAppointment,
   getBarberAppointments,
-  // otras funciones de servicio aquí según sea necesario
 };
 
 export async function createAppointment(title, description, barberId, clientId, date) {
@@ -31,4 +30,3 @@ export async function getBarberAppointments(barberId) {
   }
 }
 
-// Implementa otras funciones de servicio según sea necesario, como confirmar citas, obtener citas de clientes, etc.

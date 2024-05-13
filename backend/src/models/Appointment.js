@@ -23,8 +23,7 @@ const appointmentSchema = new Schema({
     format: '%Y-%m-%dT%H:%M'
   },
   description: {
-    type: String,
-    required: true
+    type: String
   }
 });
 

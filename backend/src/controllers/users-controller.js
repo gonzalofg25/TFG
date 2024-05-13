@@ -26,19 +26,16 @@ export async function modificarUsuario(req, res) {
     const { username, email, password } = req.body;
     const usuarioAutenticado = req.user;
 
-    // Verificar si hay un usuario autenticado
     if (!usuarioAutenticado) {
       console.error("No se pudo obtener el usuario autenticado");
       return res.status(401).json({ message: "No se pudo obtener el usuario autenticado" });
     }
 
-    // Si se proporciona una contraseña, encriptarla
     let hashedPassword;
     if (password) {
       hashedPassword = await User.encryptPassword(password);
     }
 
-    // Actualizar la información del usuario
     const updatedUser = await User.findByIdAndUpdate(usuarioAutenticado._id, {
       username,
       email,

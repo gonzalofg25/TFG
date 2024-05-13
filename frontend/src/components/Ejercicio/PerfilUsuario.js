@@ -26,6 +26,8 @@ const ClientePage = () => {
   const [description, setDescription] = useState('');
   const [token] = useState(localStorage.getItem('token'));
   const [availableTimes, setAvailableTimes] = useState([]);
+  const [citas, setCitas] = useState([]);
+  const [showCitas, setShowCitas] = useState(false);
 
   useEffect(() => {
     const fetchBarbers = async () => {
@@ -113,19 +115,16 @@ const ClientePage = () => {
         return;
       }
 
-      // Concatenar la fecha seleccionada con la hora seleccionada
       const selectedDateTimeString = `${date.toISOString().slice(0, 10)}T${selectedTime}`;
-      // Crear un nuevo objeto Date con la fecha y hora concatenadas
       const selectedDateTime = new Date(selectedDateTimeString);
 
-      // Ajustar la fecha y hora de la cita para evitar el problema
-      selectedDateTime.setDate(selectedDateTime.getDate() + 1); // Sumar un día
-      selectedDateTime.setHours(selectedDateTime.getHours() + 2); // Sumar dos horas
+      selectedDateTime.setDate(selectedDateTime.getDate() + 1);
+      selectedDateTime.setHours(selectedDateTime.getHours() + 2);
 
       const appointmentData = {
         barberName: barberName,
         title: title,
-        date: selectedDateTime.toISOString(), // Convertir la fecha y hora a formato ISO string
+        date: selectedDateTime.toISOString(),
         description: description
       };
 
@@ -151,46 +150,72 @@ const ClientePage = () => {
   const handleTimeSelect = (time) => {
     setSelectedTime(time);
   };
-
-  const isWeekday = (date) => {
-    const day = date.getDay();
-    return day !== 0 && day !== 6; // No es domingo ni sábado
-  };
-
-  const isFutureDate = (date) => {
-    const today = new Date();
-    return date >= today; // Es una fecha futura o del mismo día
-  };
-
+  
   const getAvailableTimes = (date, barberName) => {
     const dayOfWeek = date.getDay();
     const availableTimes = [];
-
-    // Verificar si es domingo (0) o sábado (6)
+  
     if (dayOfWeek === 0 || dayOfWeek === 6) {
-      // No hay horarios disponibles los domingos ni sábados
       return availableTimes;
     }
-
-    // Añadir horarios disponibles de 09:00 a 13:00 y de 16:00 a 21:00
+  
     for (let hour = 9; hour <= 21; hour++) {
       if (hour < 13 || (hour >= 16 && hour <= 21)) {
-        availableTimes.push(`${hour}:00`);
+        availableTimes.push(`${hour < 10 ? '0' + hour : hour}:00`);
       }
     }
-
+  
     return availableTimes;
   };
-
+  
   const handleDateChange = async (date) => {
     setDate(date);
-    if (barberName && isWeekday(date) && isFutureDate(date)) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    if (date.getDate() === today.getDate() && date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear()) {
+      const now = new Date();
+      const availableTimes = getAvailableTimes(date, barberName).filter(time => {
+        const [hour, minute] = time.split(':').map(Number);
+        const timeToCompare = new Date(date);
+        timeToCompare.setHours(hour, minute);
+        return timeToCompare > now;
+      });
+      setAvailableTimes(availableTimes);
+    } else if (date < today) {
+      setAvailableTimes([]);
+    } else {
       const availableTimes = getAvailableTimes(date, barberName);
       setAvailableTimes(availableTimes);
-    } else {
-      setAvailableTimes([]);
     }
   };
+
+  useEffect(() => {
+    console.log('Estado de showCitas:', showCitas);
+    console.log('Citas obtenidas:', citas);
+  }, [showCitas, citas]);
+
+  const handleViewAppointments = async () => {
+    try {
+      console.log('Obteniendo citas...');
+      if (showCitas) {
+        setShowCitas(false);
+      } else {
+        const response = await axios.get('http://localhost:3000/api/appoint/citasusuario', {
+          headers: {
+            Authorization: `${token}`
+          }
+        });
+        console.log('Citas obtenidas:', response.data);
+        setCitas(response.data.citasUsuario);
+        setShowCitas(true);
+      }
+    } catch (error) {
+      console.error('Error al obtener citas:', error);
+    }
+  };
+  
+  
 
   return (
     <div>
@@ -231,6 +256,32 @@ const ClientePage = () => {
       )}
 
       <button onClick={() => setModalIsOpen(true)}>Seleccionar cita</button>
+      
+      <button onClick={handleViewAppointments}>Ver Citas</button>
+
+      {showCitas && citas.length > 0 && (
+        <div>
+          <h3>Citas:</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Barbero</th>
+                <th>Título</th>
+                <th>Fecha</th>
+              </tr>
+            </thead>
+            <tbody>
+              {citas.map((cita, index) => (
+                <tr key={index}>
+                  <td>{cita.barber.username}</td>
+                  <td>{cita.title}</td>
+                  <td>{new Date(cita.date).toLocaleString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       <Modal
         isOpen={modalIsOpen}
@@ -250,7 +301,17 @@ const ClientePage = () => {
           </div>
           <div>
             <label>Fecha:</label>
-            <Calendar value={date} onChange={handleDateChange} tileDisabled={({ date }) => !isWeekday(date) || !isFutureDate(date)} />
+            <Calendar 
+              value={date} 
+              onChange={handleDateChange} 
+              tileDisabled={({ date }) => {
+                const today = new Date();
+                const dayOfWeek = date.getDay();
+                const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+                const isBeforeToday = date < today.setHours(0, 0, 0, 0);
+                return isWeekend || isBeforeToday;
+              }} 
+            />
           </div>
           {availableTimes.length > 0 ? (
             <div>

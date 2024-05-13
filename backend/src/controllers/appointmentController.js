@@ -46,3 +46,29 @@ export async function seleccionarCitaConBarbero(req, res) {
     return res.status(500).json({ message: 'Error interno del servidor' });
   }
 }
+
+export async function verCitasDelUsuario(req, res) {
+  try {
+    const userId = req.user.id;
+
+    const citasUsuario = await Appointment.find({ client: userId }).populate('barber', 'username').select('barber date title');
+
+    return res.status(200).json({ citasUsuario });
+  } catch (error) {
+    console.error('Error al obtener las citas del usuario:', error);
+    return res.status(500).json({ message: 'Error interno del servidor' });
+  }
+}
+
+export async function verCitasDelBarbero(req, res) {
+  try {
+    const barberId = req.user.id;
+
+    const citasBarbero = await Appointment.find({ barber: barberId }).populate('client', 'username').select('client date title');
+
+    return res.status(200).json({ citasBarbero });
+  } catch (error) {
+    console.error('Error al obtener las citas del barbero:', error);
+    return res.status(500).json({ message: 'Error interno del servidor' });
+  }
+}

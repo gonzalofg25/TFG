@@ -41,7 +41,7 @@ const Login = () => {
           window.location.href = `/cliente/${username}`;
         } else if (userRoles.includes('barbero')) {
           console.log('Usuario barbero inició sesión');
-          // Redirigir a la página del barbero
+          window.location.href = `/barbero/${username}`;
         } else if (userRoles.includes('admin')) {
           console.log('Usuario administrador inició sesión');
           window.location.href = `/admin/${username}`;
