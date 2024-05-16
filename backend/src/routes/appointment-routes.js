@@ -1,5 +1,5 @@
 import express from 'express';
-import { seleccionarCitaConBarbero, verCitasDelUsuario, verCitasDelBarbero } from '../controllers/appointmentController.js';
+import { seleccionarCitaConBarbero, verCitasDelUsuario, verCitasDelBarbero, modificarCita, cancelarCita } from '../controllers/appointmentController.js';
 import { checkToken } from '../middlewares/auth-middleware.js';
 
 const router = express.Router();
@@ -7,5 +7,7 @@ const router = express.Router();
 router.post('/cita',checkToken,seleccionarCitaConBarbero)
 router.get('/citasusuario',checkToken,verCitasDelUsuario)
 router.get('/citasbarbero',checkToken,verCitasDelBarbero)
+router.put('/cita/:citaId',checkToken,modificarCita)
+router.delete('/cita/:citaId',checkToken,cancelarCita)
 
 export default router;

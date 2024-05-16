@@ -82,7 +82,7 @@ const BarberoPage = () => {
               <li key={index}>
                 <p>Cliente: {cita.client.username}</p>
                 <p>Título: {cita.title}</p>
-                <p>Fecha: {new Date(cita.date).toLocaleString()}</p>
+                <p>Fecha: {new Date(new Date(cita.date).getTime() - (2 * 60 * 60 * 1000)).toLocaleString()}</p>
               </li>
             ))}
           </ul>

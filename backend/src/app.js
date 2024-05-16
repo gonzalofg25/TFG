@@ -5,6 +5,7 @@ import { jsonParser } from './middlewares/auth-middleware.js';
 import authRoutes from './routes/auth-routes.js';
 import userRoutes from './routes/user-router.js';
 import appointmentRoutes from './routes/appointment-routes.js';
+import reviewRoutes from './routes/review-routes.js'
 import cors from 'cors'; // Importa el middleware CORS
 
 const app = express();
@@ -21,6 +22,7 @@ app.use(jsonParser);
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/appoint', appointmentRoutes);
+app.use('/api/review', reviewRoutes)
 
 init(app, config);
 

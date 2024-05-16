@@ -114,20 +114,20 @@ const ClientePage = () => {
         alert('Por favor, completa todos los campos.');
         return;
       }
-
+  
       const selectedDateTimeString = `${date.toISOString().slice(0, 10)}T${selectedTime}`;
       const selectedDateTime = new Date(selectedDateTimeString);
-
+  
       selectedDateTime.setDate(selectedDateTime.getDate() + 1);
       selectedDateTime.setHours(selectedDateTime.getHours() + 2);
-
+  
       const appointmentData = {
         barberName: barberName,
         title: title,
         date: selectedDateTime.toISOString(),
         description: description
       };
-
+  
       await axios.post('http://localhost:3000/api/appoint/cita', appointmentData, {
         headers: {
           Authorization: `${token}`
@@ -137,10 +137,13 @@ const ClientePage = () => {
       setModalIsOpen(false);
     } catch (error) {
       console.error('Error al programar la cita:', error);
-      alert('Ha ocurrido un error al programar la cita. Por favor, intenta nuevamente más tarde.');
+      if (error.response && error.response.data && error.response.data.message) {
+        alert(error.response.data.message);
+      } else {
+        alert('Ha ocurrido un error al programar la cita. Por favor, intenta nuevamente más tarde.');
+      }
     }
   };
-
   const handleSelectBarber = async (barber) => {
     setBarberName(barber.username);
     const availableTimes = getAvailableTimes(date, barber.username);
@@ -190,11 +193,6 @@ const ClientePage = () => {
     }
   };
 
-  useEffect(() => {
-    console.log('Estado de showCitas:', showCitas);
-    console.log('Citas obtenidas:', citas);
-  }, [showCitas, citas]);
-
   const handleViewAppointments = async () => {
     try {
       console.log('Obteniendo citas...');
@@ -214,8 +212,98 @@ const ClientePage = () => {
       console.error('Error al obtener citas:', error);
     }
   };
+
+  const handleModifyAppointment = async (citaId) => {
+    try {
+      const currentDate = new Date();
+      const selectedDate = new Date();
+      const newTitle = prompt('Por favor, introduce el nuevo título de la cita:');
+      if (newTitle !== null) {
+        const newDateTime = prompt('Por favor, introduce la nueva fecha y hora de la cita en formato "YYYY-MM-DD HH:MM":');
+        if (newDateTime !== null) {
+          const [dateString, timeString] = newDateTime.split(' ');
+          const [year, month, day] = dateString.split('-').map(Number);
+          const [hours, minutes] = timeString.split(':').map(Number);
+      
+          selectedDate.setFullYear(year, month - 1, day);
+          selectedDate.setHours(hours, minutes);
+  
+          if (isNaN(selectedDate.getTime())) {
+            throw new Error('Formato de fecha y hora no válido');
+          }
+          
+          if (selectedDate.toDateString() === currentDate.toDateString() && selectedDate <= currentDate) {
+            throw new Error('No puedes modificar una cita para una hora que ya ha pasado');
+          }
+          
+          selectedDate.setHours(selectedDate.getHours() + 2, 0, 0);
+  
+          if (selectedDate <= currentDate || selectedDate.getDay() === 0 || selectedDate.getDay() === 6) {
+            throw new Error('No se puede seleccionar una cita en días anteriores al actual ni en sábados o domingos.');
+          }
   
   
+          const availableTimes = getAvailableTimes(selectedDate, barberName);
+  
+          if (!availableTimes.includes(timeString)) {
+            throw new Error('El horario seleccionado no está disponible.');
+          }
+  
+          const updatedData = {
+            title: newTitle,
+            date: selectedDate.toISOString(),
+          };
+      
+          const response = await axios.put(`http://localhost:3000/api/appoint/cita/${citaId}`, updatedData, {
+            headers: {
+              Authorization: `${token}`
+            }
+          });
+      
+          if (response.status === 200) {
+            alert('Cita modificada exitosamente');
+            const updatedCitas = citas.map(cita => {
+              if (cita._id === citaId) {
+                return {
+                  ...cita,
+                  title: newTitle,
+                  date: updatedData.date
+                };
+              }
+              return cita;
+            });
+            setCitas(updatedCitas);
+          } else {
+            alert('Ha ocurrido un error al modificar la cita. Por favor, intenta nuevamente más tarde.');
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error al modificar la cita:', error);
+      alert(error.message || 'Ha ocurrido un error al modificar la cita. Por favor, intenta nuevamente más tarde.');
+    }
+  };
+  
+  const handleCancelConfirmation = (citaId) => {
+    if (window.confirm('¿Estás seguro de que deseas cancelar esta cita?')) {
+      handleCancelAppointment(citaId);
+    }
+  };
+  
+  const handleCancelAppointment = async (citaId) => {
+    try {
+      await axios.delete(`http://localhost:3000/api/appoint/cita/${citaId}`, {
+        headers: {
+          Authorization: `${token}`
+        }
+      });
+      setCitas(citas.filter(cita => cita._id !== citaId));
+      alert('Cita cancelada correctamente');
+    } catch (error) {
+      console.error('Error al cancelar la cita:', error);
+      alert('Ha ocurrido un error al cancelar la cita. Por favor, intenta nuevamente más tarde.');
+    }
+  };
 
   return (
     <div>
@@ -262,24 +350,17 @@ const ClientePage = () => {
       {showCitas && citas.length > 0 && (
         <div>
           <h3>Citas:</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>Barbero</th>
-                <th>Título</th>
-                <th>Fecha</th>
-              </tr>
-            </thead>
-            <tbody>
-              {citas.map((cita, index) => (
-                <tr key={index}>
-                  <td>{cita.barber.username}</td>
-                  <td>{cita.title}</td>
-                  <td>{new Date(cita.date).toLocaleString()}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <ul>
+            {citas.map((cita, index) => (
+              <li key={index}>
+                <p>Barbero: {cita.barber.username}</p>
+                <p>Título: {cita.title}</p>
+                <p>Fecha: {new Date(new Date(cita.date).getTime() - (2 * 60 * 60 * 1000)).toLocaleString()}</p>
+                <button onClick={() => handleModifyAppointment(cita._id)}>Modificar</button>
+                <button onClick={() => handleCancelConfirmation(cita._id)}>Cancelar</button>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
 

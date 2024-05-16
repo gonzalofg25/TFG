@@ -17,8 +17,7 @@ export async function seleccionarCitaConBarbero(req, res) {
     const barber = await User.findOne({ username: barberName });
 
     if (!barber || barber.roles.indexOf("barbero") === -1) {
-      console.log("Barbero encontrado:", barber);
-      console.log("Barbero no válido:", barber);
+      console.log("Barbero no encontrado o no válido:", barber);
       return res.status(400).json({ message: "El usuario seleccionado no es un barbero válido" });
     }
 
@@ -27,7 +26,7 @@ export async function seleccionarCitaConBarbero(req, res) {
     const existingAppointment = await Appointment.findOne({ barber: barber._id, date });
 
     if (existingAppointment) {
-      return res.status(400).json({ message: "Ya tienes una cita con este barbero a la misma hora" });
+      return res.status(400).json({ message: "Ya hay una cita con este barbero a esa hora" });
     }
 
     const appointment = new Appointment({
@@ -69,6 +68,65 @@ export async function verCitasDelBarbero(req, res) {
     return res.status(200).json({ citasBarbero });
   } catch (error) {
     console.error('Error al obtener las citas del barbero:', error);
+    return res.status(500).json({ message: 'Error interno del servidor' });
+  }
+}
+
+export async function modificarCita(req, res) {
+  try {
+    const { citaId } = req.params;
+    const { title, date } = req.body;
+
+    console.log("Datos recibidos:", req.body);
+
+    if (!title || !date) {
+      return res.status(400).json({ message: "Faltan campos obligatorios" });
+    }
+
+    const cita = await Appointment.findById(citaId);
+
+    if (!cita) {
+      return res.status(404).json({ message: "La cita no existe" });
+    }
+
+    const otraCita = await Appointment.findOne({ barberName: cita.barberName, date: date });
+
+    if (otraCita && otraCita._id.toString() !== citaId) {
+      return res.status(400).json({ message: "Ya existe una cita para este barbero en la misma fecha y hora" });
+    }
+
+    cita.title = title;
+    cita.date = date;
+
+    await cita.save();
+
+    return res.status(200).json({ message: 'Cita modificada con éxito', cita });
+  } catch (error) {
+    console.error('Error al modificar la cita:', error);
+    return res.status(500).json({ message: 'Error interno del servidor' });
+  }
+}
+
+export async function cancelarCita(req, res) {
+  try {
+    const { citaId } = req.params;
+    const clientId = req.user.id;
+
+    const cita = await Appointment.findById(citaId);
+
+    if (!cita) {
+      return res.status(404).json({ message: "La cita no existe" });
+    }
+
+    if (cita.client.toString() !== clientId) {
+      return res.status(403).json({ message: "No tienes permiso para cancelar esta cita" });
+    }
+
+    await Appointment.findByIdAndDelete(citaId);
+
+    return res.status(200).json({ message: 'Cita cancelada con éxito' });
+  } catch (error) {
+    console.error('Error al cancelar la cita:', error);
     return res.status(500).json({ message: 'Error interno del servidor' });
   }
 }
