@@ -1,22 +1,26 @@
 import Review from '../models/Review.js';
 import User from '../models/User.js';
-import jwt from 'jsonwebtoken';
 
 const createReview = async (req, res) => {
   try {
     const { barberUsername, rating, comment } = req.body;
 
-    const token = req.headers.authorization.split(' ')[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findOne({ username: decoded.username });
+    // Obtenemos el usuario del token verificado a través del middleware
+    const user = req.user;
 
     if (!user) {
       return res.status(404).json({ message: 'Usuario no encontrado.' });
     }
 
+    // Buscamos al barbero por su nombre de usuario
+    const barberUser = await User.findOne({ username: barberUsername });
+    if (!barberUser) {
+      return res.status(404).json({ message: 'El barbero no fue encontrado.' });
+    }
+
     const review = new Review({
-      user: user.username,
-      barberUsername,
+      user: user.id,
+      barber: barberUser._id, // Utilizamos el ObjectId del barbero
       rating,
       comment
     });
@@ -29,6 +33,7 @@ const createReview = async (req, res) => {
     res.status(500).json({ message: 'Error al crear la revisión.' });
   }
 };
+
 
 const getBarberReviews = async (req, res) => {
   try {

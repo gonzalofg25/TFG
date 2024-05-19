@@ -7,8 +7,13 @@ import 'react-calendar/dist/Calendar.css';
 
 Modal.setAppElement('#root');
 
+const Star = ({ selected = false, onClick = () => {} }) => (
+  <span onClick={onClick}>{selected ? "★" : "☆"}</span>
+);
+
 const ClientePage = () => {
   const { username } = useParams();
+
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -28,6 +33,9 @@ const ClientePage = () => {
   const [availableTimes, setAvailableTimes] = useState([]);
   const [citas, setCitas] = useState([]);
   const [showCitas, setShowCitas] = useState(false);
+  const [showReviewSection, setShowReviewSection] = useState(false);
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState('');
 
   useEffect(() => {
     const fetchBarbers = async () => {
@@ -144,8 +152,10 @@ const ClientePage = () => {
       }
     }
   };
+
   const handleSelectBarber = async (barber) => {
     setBarberName(barber.username);
+    setShowReviewSection(false); // Oculta la sección de valoración al seleccionar un barbero
     const availableTimes = getAvailableTimes(date, barber.username);
     setAvailableTimes(availableTimes);
   };
@@ -187,7 +197,8 @@ const ClientePage = () => {
       setAvailableTimes(availableTimes);
     } else if (date < today) {
       setAvailableTimes([]);
-    } else {
+    }
+    else {
       const availableTimes = getAvailableTimes(date, barberName);
       setAvailableTimes(availableTimes);
     }
@@ -224,42 +235,49 @@ const ClientePage = () => {
           const [dateString, timeString] = newDateTime.split(' ');
           const [year, month, day] = dateString.split('-').map(Number);
           const [hours, minutes] = timeString.split(':').map(Number);
-      
+    
           selectedDate.setFullYear(year, month - 1, day);
           selectedDate.setHours(hours, minutes);
-  
+    
           if (isNaN(selectedDate.getTime())) {
             throw new Error('Formato de fecha y hora no válido');
           }
-          
+    
           if (selectedDate.toDateString() === currentDate.toDateString() && selectedDate <= currentDate) {
             throw new Error('No puedes modificar una cita para una hora que ya ha pasado');
           }
-          
-          selectedDate.setHours(selectedDate.getHours() + 2, 0, 0);
-  
-          if (selectedDate <= currentDate || selectedDate.getDay() === 0 || selectedDate.getDay() === 6) {
-            throw new Error('No se puede seleccionar una cita en días anteriores al actual ni en sábados o domingos.');
+    
+          selectedDate.setHours(selectedDate.getHours() + 2);
+    
+          if (selectedDate <= currentDate) {
+            throw new Error('No se puede seleccionar una cita en días anteriores al actual.');
           }
-  
-  
+    
+          if (selectedDate.getDay() === 0) {
+            throw new Error('No se puede seleccionar una cita en domingo.');
+          }
+    
+          if (selectedDate.getDay() === 6) {
+            throw new Error('No se puede seleccionar una cita en sábado.');
+          }
+    
           const availableTimes = getAvailableTimes(selectedDate, barberName);
-  
+    
           if (!availableTimes.includes(timeString)) {
             throw new Error('El horario seleccionado no está disponible.');
           }
-  
+    
           const updatedData = {
             title: newTitle,
             date: selectedDate.toISOString(),
           };
-      
+    
           const response = await axios.put(`http://localhost:3000/api/appoint/cita/${citaId}`, updatedData, {
             headers: {
               Authorization: `${token}`
             }
           });
-      
+    
           if (response.status === 200) {
             alert('Cita modificada exitosamente');
             const updatedCitas = citas.map(cita => {
@@ -283,13 +301,13 @@ const ClientePage = () => {
       alert(error.message || 'Ha ocurrido un error al modificar la cita. Por favor, intenta nuevamente más tarde.');
     }
   };
-  
+
   const handleCancelConfirmation = (citaId) => {
     if (window.confirm('¿Estás seguro de que deseas cancelar esta cita?')) {
       handleCancelAppointment(citaId);
     }
   };
-  
+
   const handleCancelAppointment = async (citaId) => {
     try {
       await axios.delete(`http://localhost:3000/api/appoint/cita/${citaId}`, {
@@ -305,13 +323,45 @@ const ClientePage = () => {
     }
   };
 
+  const handleOpenReviewSection = () => {
+    setShowReviewSection(prevState => !prevState);
+    setBarberName('');
+  };
+
+  const handleCloseReviewSection = () => {
+    setShowReviewSection(false);
+  };
+
+  const handleSubmitReview = async () => {
+    try {
+      const reviewData = {
+        barberUsername: barberName,
+        rating: rating,
+        comment: comment
+      };
+  
+      await axios.post('http://localhost:3000/api/review/creareview', reviewData, {
+        headers: {
+          Authorization: `${token}`
+        }
+      });
+      alert('¡Valoración enviada exitosamente!');
+      setRating(0);
+      setComment('');
+      setShowReviewSection(false);
+    } catch (error) {
+      console.error('Error al enviar la valoración:', error);
+      alert('Ha ocurrido un error al enviar la valoración. Por favor, intenta nuevamente más tarde.');
+    }
+  };
+
   return (
     <div>
       <h2>Bienvenido, {username}!</h2>
       <p>Esta es la página para usuarios con rol "cliente". Aquí puedes mostrar información específica del usuario.</p>
-      
+
       <button onClick={() => setShowForm(!showForm)}>Actualizar información</button>
-      
+
       {showForm && (
         <form onSubmit={handleUpdateUserInfo}>
           <div>
@@ -344,85 +394,116 @@ const ClientePage = () => {
       )}
 
       <button onClick={() => setModalIsOpen(true)}>Seleccionar cita</button>
-      
-      <button onClick={handleViewAppointments}>Ver Citas</button>
 
-      {showCitas && citas.length > 0 && (
-        <div>
-          <h3>Citas:</h3>
-          <ul>
-            {citas.map((cita, index) => (
-              <li key={index}>
-                <p>Barbero: {cita.barber.username}</p>
-                <p>Título: {cita.title}</p>
-                <p>Fecha: {new Date(new Date(cita.date).getTime() - (2 * 60 * 60 * 1000)).toLocaleString()}</p>
-                <button onClick={() => handleModifyAppointment(cita._id)}>Modificar</button>
-                <button onClick={() => handleCancelConfirmation(cita._id)}>Cancelar</button>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+<button onClick={handleViewAppointments}>Ver Citas</button>
 
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={() => setModalIsOpen(false)}
-        contentLabel="Seleccionar cita"
-      >
-        <h2>Seleccionar cita</h2>
-        <form onSubmit={handleSubmitAppointment}>
-          <div>
-            <label>Barbero:</label>
-            <select value={barberName} onChange={(e) => setBarberName(e.target.value)}>
-              <option value="">Seleccionar barbero</option>
-              {barberos.map((barbero, index) => (
-                <option key={index} value={barbero.username}>{barbero.username}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label>Fecha:</label>
-            <Calendar 
-              value={date} 
-              onChange={handleDateChange} 
-              tileDisabled={({ date }) => {
-                const today = new Date();
-                const dayOfWeek = date.getDay();
-                const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-                const isBeforeToday = date < today.setHours(0, 0, 0, 0);
-                return isWeekend || isBeforeToday;
-              }} 
-            />
-          </div>
-          {availableTimes.length > 0 ? (
-            <div>
-              <label>Horarios disponibles:</label>
-              <ul>
-                {availableTimes.map((time, index) => (
-                  <li key={index} onClick={() => handleTimeSelect(time)}>
-                    <button>{time}</button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ) : (
-            <p>No hay horarios disponibles para este barbero en esta fecha.</p>
-          )}
-          <div>
-            <label>Título:</label>
-            <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
-          </div>
-          <div>
-            <label>Descripción:</label>
-            <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} />
-          </div>
-          <button type="submit">Programar cita</button>
-        </form>
-      </Modal>
+{showCitas && citas.length > 0 && (
+  <div>
+    <h3>Citas:</h3>
+    <ul>
+      {citas.map((cita, index) => (
+        <li key={index}>
+          <p>Barbero: {cita.barber.username}</p>
+          <p>Título: {cita.title}</p>
+          <p>Fecha: {new Date(new Date(cita.date).getTime() - (2 * 60 * 60 * 1000)).toLocaleString()}</p>
+          <button onClick={() => handleModifyAppointment(cita._id)}>Modificar</button>
+          <button onClick={() => handleCancelConfirmation(cita._id)}>Cancelar</button>
+        </li>
+      ))}
+    </ul>
+  </div>
+)}
 
-      <button onClick={handleLogout}>Cerrar Sesión</button>
+<Modal
+  isOpen={modalIsOpen}
+  onRequestClose={() => setModalIsOpen(false)}
+  contentLabel="Seleccionar cita"
+>
+  <h2>Seleccionar cita</h2>
+  <form onSubmit={handleSubmitAppointment}>
+    <div>
+      <label>Barbero:</label>
+      <select value={barberName} onChange={(e) => setBarberName(e.target.value)}>
+        <option value="">Seleccionar barbero</option>
+        {barberos.map((barbero, index) => (
+          <option key={index} value={barbero.username}>{barbero.username}</option>
+        ))}
+      </select>
     </div>
-  );
+    <div>
+      <label>Fecha:</label>
+      <Calendar 
+        value={date} 
+        onChange={handleDateChange} 
+        tileDisabled={({ date }) => {
+          const today = new Date();
+          const dayOfWeek = date.getDay();
+          const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+          const isBeforeToday = date < today.setHours(0, 0, 0, 0);
+          return isWeekend || isBeforeToday;
+        }} 
+      />
+    </div>
+    {availableTimes.length > 0 ? (
+      <div>
+        <label>Horarios disponibles:</label>
+        <ul>
+          {availableTimes.map((time, index) => (
+            <li key={index} onClick={() => handleTimeSelect(time)}>
+              <button>{time}</button>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ) : (
+      <p>No hay horarios disponibles para este barbero en esta fecha.</p>
+    )}
+    <div>
+      <label>Título:</label>
+      <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
+    </div>
+    <div>
+      <label>Descripción:</label>
+      <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} />
+    </div>
+    <button type="submit">Programar cita</button>
+  </form>
+</Modal>
+
+{/* Sección para valorar barberos */}
+<button onClick={handleOpenReviewSection}>Valorar Barbero</button>
+{showReviewSection && (
+  <div>
+    <h3>Valorar Barbero</h3>
+    <div>
+      <label>Barbero:</label>
+      <select value={barberName} onChange={(e) => setBarberName(e.target.value)}>
+        <option value="">Seleccionar barbero</option>
+        {barberos.map((barbero, index) => (
+          <option key={index} value={barbero.username}>{barbero.username}</option>
+        ))}
+      </select>
+    </div>
+    <label>Calificación:</label>
+    <div>
+      <Star selected={rating >= 1} onClick={() => setRating(1)} />
+      <Star selected={rating >= 2} onClick={() => setRating(2)} />
+      <Star selected={rating >= 3} onClick={() => setRating(3)} />
+      <Star selected={rating >= 4} onClick={() => setRating(4)} />
+      <Star selected={rating >= 5} onClick={() => setRating(5)} />
+    </div>
+    <br />
+    <label>Comentario:</label>
+    <input type="text" value={comment} onChange={(e) => setComment(e.target.value)} />
+    <br />
+    <button onClick={handleSubmitReview}>Enviar Valoración</button>
+    <button onClick={handleCloseReviewSection}>Cancelar</button>
+  </div>
+)}
+<button onClick={handleLogout}>Cerrar Sesión</button>
+</div>
+);
 };
 
 export default ClientePage;
+
