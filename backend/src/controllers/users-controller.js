@@ -79,6 +79,11 @@ export async function eliminarUsuarioAdmin(req, res) {
       return res.status(404).json({ message: `Usuario con correo ${email} no encontrado` });
     }
 
+    if (usuario.roles.includes('admin')) {
+      console.log(`Intento de eliminar un usuario con rol admin: ${email}`);
+      return res.status(403).json({ message: "No se puede eliminar un usuario con rol de administrador" });
+    }
+
     await deleteUserByUsername(email);
 
     console.log("Usuario encontrado y eliminado:", usuario);
@@ -89,3 +94,4 @@ export async function eliminarUsuarioAdmin(req, res) {
     return res.status(500).json({ message: "Error interno del servidor" });
   }
 }
+

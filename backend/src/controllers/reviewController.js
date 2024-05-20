@@ -1,18 +1,16 @@
 import Review from '../models/Review.js';
 import User from '../models/User.js';
 
-const createReview = async (req, res) => {
+export async function createReview(req, res){
   try {
     const { barberUsername, rating, comment } = req.body;
 
-    // Obtenemos el usuario del token verificado a través del middleware
     const user = req.user;
 
     if (!user) {
       return res.status(404).json({ message: 'Usuario no encontrado.' });
     }
 
-    // Buscamos al barbero por su nombre de usuario
     const barberUser = await User.findOne({ username: barberUsername });
     if (!barberUser) {
       return res.status(404).json({ message: 'El barbero no fue encontrado.' });
@@ -20,7 +18,7 @@ const createReview = async (req, res) => {
 
     const review = new Review({
       user: user.id,
-      barber: barberUser._id, // Utilizamos el ObjectId del barbero
+      barber: barberUser._id,
       rating,
       comment
     });
@@ -34,18 +32,30 @@ const createReview = async (req, res) => {
   }
 };
 
-
-const getBarberReviews = async (req, res) => {
+export async function getBarberReviews(req, res){
   try {
-    const barberUsername = req.params.barberUsername;
+    const user = req.user;
 
-    const reviews = await Review.find({ barberUsername: barberUsername });
+    if (!user) {
+      return res.status(404).json({ message: 'Usuario no encontrado.' });
+    }
 
-    res.status(200).json({ success: true, reviews: reviews });
+    const reviews = await Review.find({ barber: user._id }).populate('user', 'username');
+
+    res.status(200).json(reviews);
   } catch (error) {
-    console.error('Error al obtener las revisiones del barbero:', error);
-    res.status(500).json({ success: false, error: 'Error al obtener las revisiones del barbero' });
+    console.error('Error al obtener las revisiones:', error);
+    res.status(500).json({ message: 'Error al obtener las revisiones.' });
   }
 };
 
-export { createReview, getBarberReviews };
+export async function getAllReviews(req, res) {
+  try {
+    const reviews = await Review.find().populate('user', 'username').populate('barber', 'username');
+
+    res.status(200).json(reviews);
+  } catch (error) {
+    console.error('Error al obtener todas las revisiones:', error);
+    res.status(500).json({ message: 'Error al obtener todas las revisiones.' });
+  }
+};

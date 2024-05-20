@@ -403,16 +403,23 @@ const ClientePage = () => {
     <ul>
       {citas.map((cita, index) => (
         <li key={index}>
-          <p>Barbero: {cita.barber.username}</p>
-          <p>Título: {cita.title}</p>
-          <p>Fecha: {new Date(new Date(cita.date).getTime() - (2 * 60 * 60 * 1000)).toLocaleString()}</p>
-          <button onClick={() => handleModifyAppointment(cita._id)}>Modificar</button>
-          <button onClick={() => handleCancelConfirmation(cita._id)}>Cancelar</button>
+          {cita.barber ? (
+            <>
+              <p>Barbero: {cita.barber.username}</p>
+              <p>Título: {cita.title}</p>
+              <p>Fecha: {new Date(new Date(cita.date).getTime() - (2 * 60 * 60 * 1000)).toLocaleString()}</p>
+              <button onClick={() => handleModifyAppointment(cita._id)}>Modificar</button>
+              <button onClick={() => handleCancelConfirmation(cita._id)}>Cancelar</button>
+            </>
+          ) : (
+            <p>Error: Información del barbero no disponible</p>
+          )}
         </li>
       ))}
     </ul>
   </div>
 )}
+
 
 <Modal
   isOpen={modalIsOpen}

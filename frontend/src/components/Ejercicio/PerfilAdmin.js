@@ -6,24 +6,28 @@ const AdminPage = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [emailToDelete, setEmailToDelete] = useState('');
   const [users, setUsers] = useState([]);
+  const [reviews, setReviews] = useState([]);
+  const [showReviewsModal, setShowReviewsModal] = useState(false);
   const token = localStorage.getItem('token');
 
-  const handleShowUserModal = async () => {
-    try {
-      const response = await axios.get('http://localhost:3000/api/user/listadmin', {
-        headers: {
-          Authorization: `${token}`
-        }
-      });
-      setUsers(response.data);
-      setShowUserModal(true);
-    } catch (error) {
-      console.error('Error al obtener usuarios:', error);
+  const toggleShowUserModal = async () => {
+    if (!showUserModal) {
+      try {
+        const response = await axios.get('http://localhost:3000/api/user/listadmin', {
+          headers: {
+            Authorization: `${token}`
+          }
+        });
+        setUsers(response.data);
+      } catch (error) {
+        console.error('Error al obtener usuarios:', error);
+      }
     }
+    setShowUserModal(!showUserModal);
   };
 
-  const handleShowDeleteModal = () => {
-    setShowDeleteModal(true);
+  const toggleShowDeleteModal = () => {
+    setShowDeleteModal(!showDeleteModal);
   };
 
   const handleDeleteUser = async (e) => {
@@ -41,13 +45,35 @@ const AdminPage = () => {
       if (response.status === 200) {
         alert('Usuario eliminado exitosamente');
         setShowDeleteModal(false);
-      } else {
-        alert('El usuario no se encuentra en la base de datos');
+        // Opcional: refrescar la lista de usuarios
+        toggleShowUserModal();
       }
     } catch (error) {
-      console.error('Error al eliminar usuario:', error);
-      alert('Ha ocurrido un error. Por favor, inténtalo nuevamente más tarde.');
+      if (error.response && error.response.status === 403 && error.response.data.message === "No se puede eliminar un usuario con rol de administrador") {
+        alert('No se puede eliminar un usuario con rol de administrador');
+      } else if (error.response && error.response.status === 404) {
+        alert('El usuario no se encuentra en la base de datos');
+      } else {
+        console.error('Error al eliminar usuario:', error);
+        alert('Ha ocurrido un error. Por favor, inténtalo nuevamente más tarde.');
+      }
     }
+  };
+
+  const toggleShowReviewsModal = async () => {
+    if (!showReviewsModal) {
+      try {
+        const response = await axios.get('http://localhost:3000/api/review/admin', {
+          headers: {
+            Authorization: `${token}`
+          }
+        });
+        setReviews(response.data);
+      } catch (error) {
+        console.error('Error al obtener valoraciones:', error);
+      }
+    }
+    setShowReviewsModal(!showReviewsModal);
   };
 
   const handleLogout = () => {
@@ -58,14 +84,20 @@ const AdminPage = () => {
   return (
     <div>
       <h2>Panel de Administrador</h2>
-      <button onClick={handleShowUserModal}>Ver Usuarios</button>
-      <button onClick={handleShowDeleteModal}>Eliminar Usuario</button>
+      <button onClick={toggleShowUserModal}>
+        {showUserModal ? 'Ocultar Usuarios' : 'Ver Usuarios'}
+      </button>
+      <button onClick={toggleShowDeleteModal}>
+        {showDeleteModal ? 'Ocultar Eliminar Usuario' : 'Eliminar Usuario'}
+      </button>
+      <button onClick={toggleShowReviewsModal}>
+        {showReviewsModal ? 'Ocultar Valoraciones' : 'Ver Valoraciones'}
+      </button>
       <button onClick={handleLogout}>Cerrar Sesión</button>
 
       {showUserModal && (
         <div className="modal">
           <div className="modal-content">
-            <span className="close" onClick={() => setShowUserModal(false)}>&times;</span>
             <h3>Lista de Usuarios</h3>
             <table>
               <thead>
@@ -92,7 +124,6 @@ const AdminPage = () => {
       {showDeleteModal && (
         <div className="modal">
           <div className="modal-content">
-            <span className="close" onClick={() => setShowDeleteModal(false)}>&times;</span>
             <h3>Eliminar Usuario</h3>
             <form onSubmit={handleDeleteUser}>
               <div>
@@ -101,6 +132,34 @@ const AdminPage = () => {
               </div>
               <button type="submit">Eliminar</button>
             </form>
+          </div>
+        </div>
+      )}
+
+      {showReviewsModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <h3>Lista de Valoraciones</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Usuario</th>
+                  <th>Barbero</th>
+                  <th>Calificación</th>
+                  <th>Comentario</th>
+                </tr>
+              </thead>
+              <tbody>
+                {reviews.map((review, index) => (
+                  <tr key={index}>
+                    <td>{review.user.username}</td>
+                    <td>{review.barber.username}</td>
+                    <td>{review.rating}</td>
+                    <td>{review.comment}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       )}
