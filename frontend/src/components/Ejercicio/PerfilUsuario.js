@@ -513,4 +513,3 @@ const ClientePage = () => {
 };
 
 export default ClientePage;
-

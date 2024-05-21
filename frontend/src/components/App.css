@@ -3,6 +3,12 @@
   src: url('../resources/JosefinSans-SemiBold.ttf') format('truetype');
 }
 
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
 
 #registro-container {
   font-family: 'Josefins',serif;
@@ -159,3 +165,200 @@ background: linear-gradient(36deg, rgba(109,142,170,1) 50%, rgba(33,3,221,1) 100
   margin-bottom: 10px; /* Ajusta el margen según sea necesario */
 }
 
+/*---------------------------------------------------------------------------------------------------*/
+
+#admin{
+  background-color: #808080; /* Gris medio como color base */
+  background-image: linear-gradient(135deg, #808080, #1E4879);  
+  min-height: 100vh; /* Esto asegura que cubra al menos toda la altura de la ventana */
+  height: 100%; /* Asegura que ocupe el 100% de la altura de la pantalla */
+  width: 100%; /* Asegura que ocupe el 100% del ancho de la pantalla */
+  margin: 0; /* Elimina cualquier margen que pueda tener */
+  padding-top: 50px; /* Agrega espacio superior para el título */
+  box-sizing: border-box;
+}
+
+#admin-container{
+  margin: 0 20%;
+}
+
+#admin-tit{
+  font-family: 'Josefins', serif;
+  text-align: center;
+  color: white;
+}
+
+.horizontal-menu {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.horizontal-menu button {
+  margin-right: 10px; /* Ajusta el espaciado entre los botones según tus preferencias */
+  color: #000000;
+  border: 2px solid #086281;
+  padding: 14px 30px;
+  display: inline-block;
+  font-family: "Josefins", serif;
+  font-size: 17px;
+  border-radius: 8px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  box-shadow: inset 0 0 0 0 #086281;
+  -webkit-transition: ease-out 0.4s;
+  -moz-transition: ease-out 0.4s;
+  transition: ease-out 0.4s;
+}
+
+.horizontal-menu button:hover{
+  box-shadow: inset 0 100px 0 0 #086281;
+  color: white;
+}
+
+#cerrarsesion{
+  margin-left: auto;  
+  color: #000000;
+  border: 2px solid red;
+  padding: 14px 30px;
+  display: inline-block;
+  font-family: "Josefins", serif;
+  font-size: 17px;
+  border-radius: 8px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  box-shadow: inset 0 0 0 0 red;
+  -webkit-transition: ease-out 0.4s;
+  -moz-transition: ease-out 0.4s;
+  transition: ease-out 0.4s;
+}
+
+#cerrarsesion:hover{
+  box-shadow: inset 0 100px 0 0 red;
+  color: white;
+}
+
+.admin, .barber {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.admin-content,.barber-content {
+  background-color: white; /* Solo para mayor claridad visual */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  height: 600px;
+  width: 100%;
+}
+
+.admin-content h3{
+  text-align: center;
+  font-family: 'Josefins', serif;
+}
+
+.admin-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-family: 'Josefins', serif;
+}
+
+.admin-content th, .admin-content td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.admin-content th {
+  background-color: #f2f2f2;
+  text-align: left;
+}
+
+.admin-content tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.admin-content tr:hover {
+  background-color: #ddd;
+}
+
+.admin-content th {
+  text-align: center;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  background-color: #086281;
+  color: white;
+}
+
+/* Estilos para Eliminar Usuario */
+.admin-content form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50%;
+  margin:0 17%;
+}
+
+.admin-content form div {
+  margin-bottom: 15px;
+  width: 100%;
+  margin-top: 18%;
+}
+
+.admin-content form label {
+  font-family: 'Josefins', serif;
+  font-weight: bold;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.admin-content form input[type="email"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.admin-content form button[type="submit"] {
+  padding: 10px 20px;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: 'Josefins', serif;
+}
+
+.admin-content form button[type="submit"]:hover {
+  background-color: rgb(141, 0, 0);
+}
+
+/*------------------------------------------------------------------------------------------------------------------------------*/
+
+#barber{
+  background-color: #808080; /* Gris medio como color base */
+  background-image: linear-gradient(135deg, #808080, #57ce57c7);  
+  min-height: 100vh; /* Esto asegura que cubra al menos toda la altura de la ventana */
+  height: 100%; /* Asegura que ocupe el 100% de la altura de la pantalla */
+  width: 100%; /* Asegura que ocupe el 100% del ancho de la pantalla */
+  margin: 0; /* Elimina cualquier margen que pueda tener */
+  padding-top: 50px; /* Agrega espacio superior para el título */
+  box-sizing: border-box;
+}
+
+#barber-container{
+  margin: 0 20%;
+}
+
+#barber-tit{
+  font-family: 'Josefins', serif;
+  text-align: center;
+  color: white;
+}

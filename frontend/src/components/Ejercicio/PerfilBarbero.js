@@ -6,14 +6,9 @@ const BarberoPage = () => {
   const { username } = useParams();
   const [token] = useState(localStorage.getItem('token'));
   const [clientes, setClientes] = useState([]);
-  const [error, setError] = useState(null);
   const [citas, setCitas] = useState([]);
-  const [showClientes, setShowClientes] = useState(false);
-  const [showCitas, setShowCitas] = useState(false);
+  const [showSection, setShowSection] = useState(null);
   const [reviews, setReviews] = useState([]);
-  const [showReviews, setShowReviews] = useState(false);
-  const [showUpdateForm, setShowUpdateForm] = useState(false);
-
   const [newUsername, setNewUsername] = useState('');
   const [newEmail, setNewEmail] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -30,7 +25,7 @@ const BarberoPage = () => {
         });
         setClientes(response.data);
       } catch (error) {
-        setError('Error al obtener clientes. Por favor, intenta nuevamente más tarde.');
+        console.error('Error al obtener clientes. Por favor, intenta nuevamente más tarde.');
       }
     };
 
@@ -43,7 +38,7 @@ const BarberoPage = () => {
         });
         setCitas(response.data.citasBarbero);
       } catch (error) {
-        setError('Error al obtener citas del barbero. Por favor, intenta nuevamente más tarde.');
+        console.error('Error al obtener citas del barbero. Por favor, intenta nuevamente más tarde.');
       }
     };
 
@@ -56,7 +51,7 @@ const BarberoPage = () => {
         });
         setReviews(response.data);
       } catch (error) {
-        setError('Error al obtener valoraciones. Por favor, intenta nuevamente más tarde.');
+        console.error('Error al obtener valoraciones. Por favor, intenta nuevamente más tarde.');
       }
     };
 
@@ -106,97 +101,123 @@ const BarberoPage = () => {
     }
   };
 
-  return (
-    <div>
-      <h2>Bienvenido, {username}!</h2>
-      <p>Esta es la página para usuarios con rol "barbero".</p>
-      {error && <p>{error}</p>}
-      <button onClick={() => setShowClientes(!showClientes)}>
-        {showClientes ? 'Ocultar clientes' : 'Obtener clientes'}
-      </button>
-      <button onClick={() => setShowCitas(!showCitas)}>
-        {showCitas ? 'Ocultar Citas' : 'Ver Citas'}
-      </button>
-      <button onClick={() => setShowReviews(!showReviews)}>
-        {showReviews ? 'Ocultar Valoraciones' : 'Ver Valoraciones'}
-      </button>
-      <button onClick={handleLogout}>Cerrar Sesión</button>
-      <button onClick={() => setShowUpdateForm(!showUpdateForm)}>Actualizar Información</button>
+  const handleShowSection = (section) => {
+    if (showSection === section) {
+      setShowSection(null);
+    } else {
+      setShowSection(section);
+    }
+  };
 
-{showUpdateForm && (
-  <form onSubmit={handleUpdateInfo}>
-    <div>
-      <label htmlFor="newUsername">Nuevo Nombre de Usuario:</label>
-      <input
-        type="text"
-        id="newUsername"
-        value={newUsername}
-        onChange={(e) => setNewUsername(e.target.value)}
-      />
+  return (
+    <div id='barber'>
+      <div id='barber-container'>
+        <h2 id='barber-tit'>Bienvenido, {username}!</h2>
+        <nav className="horizontal-menu">
+          <button onClick={() => handleShowSection('clientes')}>
+            {showSection === 'clientes' ? 'Ocultar clientes' : 'Obtener clientes'}
+          </button>
+          <button onClick={() => handleShowSection('citas')}>
+            {showSection === 'citas' ? 'Ocultar Citas' : 'Ver Citas'}
+          </button>
+          <button onClick={() => handleShowSection('reviews')}>
+            {showSection === 'reviews' ? 'Ocultar Valoraciones' : 'Ver Valoraciones'}
+          </button>
+          <button onClick={() => handleShowSection('update')}>
+            {showSection === 'update' ? 'Ocultar Actualización' : 'Actualizar Información'}
+          </button>
+          <button id='cerrarsesion' onClick={handleLogout}>Cerrar Sesión</button>
+        </nav>
+
+        {showSection === 'update' && (
+          <div className='barber'>
+            <div className='barber-content'>
+              <form onSubmit={handleUpdateInfo}>
+                <div>
+                  <label htmlFor="newUsername">Nuevo Nombre de Usuario:</label>
+                  <input
+                    type="text"
+                    id="newUsername"
+                    value={newUsername}
+                    onChange={(e) => setNewUsername(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="newEmail">Nuevo Email:</label>
+                  <input
+                    type="email"
+                    id="newEmail"
+                    value={newEmail}
+                    onChange={(e) => setNewEmail(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="newPassword">Nueva Contraseña:</label>
+                  <input
+                    type="password"
+                    id="newPassword"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                  />
+                </div>
+                <button type="submit">Actualizar</button>
+              </form>
+            </div>
+          </div>
+        )}
+        {updateSuccess && <p>{updateSuccess}</p>}
+        {updateError && <p>{updateError}</p>}
+        {showSection === 'clientes' && (
+          <div className='barber'>
+            <div className='barber-content'>
+              <h3>Clientes:</h3>
+              <ul>
+                {clientes.map((cliente, index) => (
+                  <li key={index}>{cliente.username} - {cliente.email}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )}
+        {showSection === 'citas' && (
+          <div className='barber'>
+            <div className='barber-content'>
+              <h3>Citas:</h3>
+              <ul>
+                {citas.map((cita, index) => {
+                  const citaDate = new Date(cita.date);
+                  citaDate.setHours(citaDate.getHours() - 2);
+                  return (
+                    <li key={index}>
+                      <p>Cliente: {cita.client ? cita.client.username : 'Cliente desconocido'}</p>
+                      <p>Título: {cita.title}</p>
+                      <p>Fecha: {citaDate.toLocaleString()}</p>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </div>
+        )}
+        {showSection === 'reviews' && (
+          <div className='barber'>
+            <div className='barber-content'>
+              <h3>Valoraciones:</h3>
+              <ul>
+                {reviews.map((review, index) => (
+                  <li key={index}>
+                    <p>Cliente: {review.cliente}</p>
+                    <p>Calificación: {review.rating}</p>
+                    <p>Comentario: {review.comment}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
-    <div>
-      <label htmlFor="newEmail">Nuevo Email:</label>
-      <input
-        type="email"
-        id="newEmail"
-        value={newEmail}
-        onChange={(e) => setNewEmail(e.target.value)}
-      />
-    </div>
-    <div>
-      <label htmlFor="newPassword">Nueva Contraseña:</label>
-      <input
-        type="password"
-        id="newPassword"
-        value={newPassword}
-        onChange={(e) => setNewPassword(e.target.value)}
-      />
-    </div>
-    <button type="submit">Actualizar</button>
-  </form>
-)}
-{updateSuccess && <p>{updateSuccess}</p>}
-{updateError && <p>{updateError}</p>}
-{showClientes && (
-  <div>
-    <h3>Clientes:</h3>
-    <ul>
-      {clientes.map((cliente, index) => (
-        <li key={index}>{cliente.username} - {cliente.email}</li>
-      ))}
-    </ul>
-  </div>
-)}
-{showCitas && (
-  <div>
-    <h3>Citas:</h3>
-    <ul>
-      {citas.map((cita, index) => (
-        <li key={index}>
-          <p>Título: {cita.title}</p>
-          <p>Fecha: {new Date(cita.date).toLocaleString()}</p>
-          <p>Descripción: {cita.description}</p>
-        </li>
-      ))}
-    </ul>
-  </div>
-)}
-{showReviews && (
-  <div>
-    <h3>Valoraciones:</h3>
-    <ul>
-      {reviews.map((review, index) => (
-        <li key={index}>
-          <p>Cliente: {review.cliente}</p>
-          <p>Calificación: {review.rating}</p>
-          <p>Comentario: {review.comment}</p>
-        </li>
-      ))}
-    </ul>
-  </div>
-)}
-</div>
-);
+  );
 };
 
 export default BarberoPage;
