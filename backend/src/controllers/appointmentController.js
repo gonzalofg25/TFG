@@ -75,12 +75,12 @@ export async function verCitasDelBarbero(req, res) {
 export async function modificarCita(req, res) {
   try {
     const { citaId } = req.params;
-    const { title, date } = req.body;
+    let { title, date } = req.body;
 
     console.log("Datos recibidos:", req.body);
 
-    if (!title || !date) {
-      return res.status(400).json({ message: "Faltan campos obligatorios" });
+    if (!date) {
+      return res.status(400).json({ message: "Falta el campo de fecha" });
     }
 
     const cita = await Appointment.findById(citaId);
@@ -95,6 +95,10 @@ export async function modificarCita(req, res) {
       return res.status(400).json({ message: "Ya existe una cita para este barbero en la misma fecha y hora" });
     }
 
+    if (!title) {
+      title = cita.title;
+    }
+
     cita.title = title;
     cita.date = date;
 
@@ -106,6 +110,7 @@ export async function modificarCita(req, res) {
     return res.status(500).json({ message: 'Error interno del servidor' });
   }
 }
+
 
 export async function cancelarCita(req, res) {
   try {
@@ -130,3 +135,33 @@ export async function cancelarCita(req, res) {
     return res.status(500).json({ message: 'Error interno del servidor' });
   }
 }
+
+export async function getCitasBarberoEnFecha(req, res) {
+  try {
+    const { barberName, date } = req.params;
+
+    const barber = await User.findOne({ username: barberName });
+    if (!barber) {
+      return res.status(404).json({ message: "Barbero no encontrado" });
+    }
+    const barberId = barber._id;
+
+    const selectedDate = new Date(date);
+
+    selectedDate.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date(selectedDate);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const citasBarbero = await Appointment.find({
+      barber: barberId,
+      date: { $gte: selectedDate, $lte: endOfDay }
+    }).select('date');
+
+    return res.status(200).json({ citasBarbero });
+  } catch (error) {
+    console.error('Error al obtener las citas del barbero en la fecha especificada:', error);
+    return res.status(500).json({ message: 'Error interno del servidor' });
+  }
+}
+

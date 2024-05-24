@@ -193,7 +193,7 @@ const ClientePage = () => {
     setSelectedTime(time);
   };
   
-  const getAvailableTimes = (date, barberName) => {
+  const getAvailableTimes = (date) => {
     const dayOfWeek = date.getDay();
     const availableTimes = [];
   
@@ -250,6 +250,15 @@ const ClientePage = () => {
             if (citasUsuario.length === 0) {
                 alert('No tienes ninguna cita reservada.');
             } else {
+                citasUsuario.sort((a, b) => {
+                    const dateA = new Date(a.date);
+                    const dateB = new Date(b.date);
+                    if (dateA.getTime() !== dateB.getTime()) {
+                        return dateA.getTime() - dateB.getTime();
+                    }
+                    return 0;
+                });
+
                 setCitas(citasUsuario);
                 setShowCitas(true);
             }
@@ -260,83 +269,83 @@ const ClientePage = () => {
 };
 
 
-  const handleModifyAppointment = async (citaId) => {
-    try {
-      const currentDate = new Date();
-      const selectedDate = new Date();
-      const newTitle = prompt('Por favor, introduce el nuevo título de la cita:');
-      if (newTitle !== null) {
-        const newDateTime = prompt('Por favor, introduce la nueva fecha y hora de la cita en formato "YYYY-MM-DD HH:MM":');
-        if (newDateTime !== null) {
-          const [dateString, timeString] = newDateTime.split(' ');
-          const [year, month, day] = dateString.split('-').map(Number);
-          const [hours, minutes] = timeString.split(':').map(Number);
-    
-          selectedDate.setFullYear(year, month - 1, day);
-          selectedDate.setHours(hours, minutes);
-    
-          if (isNaN(selectedDate.getTime())) {
-            throw new Error('Formato de fecha y hora no válido');
+const handleModifyAppointment = async (citaId) => {
+  try {
+    const currentDate = new Date();
+    const selectedDate = new Date();
+    let newTitle = prompt('Por favor, introduce el nuevo título de la cita:');
+    if (newTitle !== null) {
+      const newDateTime = prompt('Por favor, introduce la nueva fecha y hora de la cita en formato "YYYY-MM-DD HH:MM":');
+      if (newDateTime !== null) {
+        const [dateString, timeString] = newDateTime.split(' ');
+        const [year, month, day] = dateString.split('-').map(Number);
+        const [hours, minutes] = timeString.split(':').map(Number);
+
+        selectedDate.setFullYear(year, month - 1, day);
+        selectedDate.setHours(hours, minutes, 0, 0);
+
+        if (isNaN(selectedDate.getTime())) {
+          throw new Error('Formato de fecha y hora no válido');
+        }
+
+        if (selectedDate <= currentDate) {
+          throw new Error('No puedes modificar una cita para una hora que ya ha pasado');
+        }
+
+        const dayOfWeek = selectedDate.getDay();
+        if (dayOfWeek === 0) {
+          throw new Error('No se puede seleccionar una cita en domingo.');
+        }
+
+        if (dayOfWeek === 6) {
+          throw new Error('No se puede seleccionar una cita en sábado.');
+        }
+
+        const availableTimes = getAvailableTimes(selectedDate, barberName);
+
+        if (!availableTimes.includes(timeString)) {
+          throw new Error('El horario seleccionado no está disponible.');
+        }
+
+        selectedDate.setHours(selectedDate.getHours() + 2);
+
+        const updatedData = {
+          title: newTitle.trim() === '' ? null : newTitle,
+          date: selectedDate.toISOString(),
+        };
+
+        const response = await axios.put(`http://localhost:3000/api/appoint/cita/${citaId}`, updatedData, {
+          headers: {
+            Authorization: `${token}`
           }
-    
-          if (selectedDate.toDateString() === currentDate.toDateString() && selectedDate <= currentDate) {
-            throw new Error('No puedes modificar una cita para una hora que ya ha pasado');
-          }
-    
-          selectedDate.setHours(selectedDate.getHours() + 2);
-    
-          if (selectedDate <= currentDate) {
-            throw new Error('No se puede seleccionar una cita en días anteriores al actual.');
-          }
-    
-          if (selectedDate.getDay() === 0) {
-            throw new Error('No se puede seleccionar una cita en domingo.');
-          }
-    
-          if (selectedDate.getDay() === 6) {
-            throw new Error('No se puede seleccionar una cita en sábado.');
-          }
-    
-          const availableTimes = getAvailableTimes(selectedDate, barberName);
-    
-          if (!availableTimes.includes(timeString)) {
-            throw new Error('El horario seleccionado no está disponible.');
-          }
-    
-          const updatedData = {
-            title: newTitle,
-            date: selectedDate.toISOString(),
-          };
-    
-          const response = await axios.put(`http://localhost:3000/api/appoint/cita/${citaId}`, updatedData, {
-            headers: {
-              Authorization: `${token}`
+        });
+
+        if (response.status === 200) {
+          alert('Cita modificada exitosamente');
+          const updatedCitas = citas.map(cita => {
+            if (cita._id === citaId) {
+              return {
+                ...cita,
+                title: newTitle.trim() === '' ? cita.title : newTitle,
+                date: updatedData.date
+              };
             }
+            return cita;
           });
-    
-          if (response.status === 200) {
-            alert('Cita modificada exitosamente');
-            const updatedCitas = citas.map(cita => {
-              if (cita._id === citaId) {
-                return {
-                  ...cita,
-                  title: newTitle,
-                  date: updatedData.date
-                };
-              }
-              return cita;
-            });
-            setCitas(updatedCitas);
-          } else {
-            alert('Ha ocurrido un error al modificar la cita. Por favor, intenta nuevamente más tarde.');
-          }
+          setCitas(updatedCitas);
+          setShowCitas(false);
+        } else {
+          alert('Ha ocurrido un error al modificar la cita. Por favor, intenta nuevamente más tarde.');
         }
       }
-    } catch (error) {
-      console.error('Error al modificar la cita:', error);
-      alert(error.message || 'Ha ocurrido un error al modificar la cita. Por favor, intenta nuevamente más tarde.');
     }
-  };
+  } catch (error) {
+    console.error('Error al modificar la cita:', error);
+    alert(error.message || 'Ha ocurrido un error al modificar la cita. Por favor, intenta nuevamente más tarde.');
+  }
+};
+
+
 
   const handleCancelConfirmation = (citaId) => {
     if (window.confirm('¿Estás seguro de que deseas cancelar esta cita?')) {
@@ -406,32 +415,30 @@ const ClientePage = () => {
       </nav>
 
       {showBarberos && (
-  <div className='cliente'>
-    <div className={`cliente-content ${showBarberos ? 'fade-in' : ''}`}>
-      <h3>Barberos:</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Usuario</th>
-            <th>Gmail</th>
-            <th>Valoración media (Votos)</th>
-          </tr>
-        </thead>
-        <tbody>
-          {barberos.map((barbero, index) => (
-            <tr key={index} onClick={() => handleSelectBarber(barbero)}>
-              <td>{barbero.username}</td>
-              <td>{barbero.email}</td>
-              <td>{barbero.rating} ({barbero.totalVotes})</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  </div>
-)}
-
-
+        <div className='cliente'>
+          <div className={`cliente-content ${showBarberos ? 'fade-in' : ''}`}>
+            <h3>Barberos:</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Usuario</th>
+                  <th>Gmail</th>
+                  <th>Valoración media (Votos)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {barberos.map((barbero, index) => (
+                  <tr key={index} onClick={() => handleSelectBarber(barbero)}>
+                    <td>{barbero.username}</td>
+                    <td>{barbero.email}</td>
+                    <td>{barbero.rating} ({barbero.totalVotes})</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
       {showCitas && citas.length > 0 && (
         <div className='cliente'>
@@ -518,16 +525,18 @@ const ClientePage = () => {
         {showReviewSection && (
           <div className='cliente'>
             <div className={`cliente-content ${showReviewSection ? 'fade-in' : ''}`}>
-            <h3>Valorar Barbero</h3>
-            <div>
-              <label>Barbero:</label>
-              <select value={barberName} onChange={(e) => setBarberName(e.target.value)}>
-                <option value="">Seleccionar barbero</option>
-                {barberos.map((barbero, index) => (
-                  <option key={index} value={barbero.username}>{barbero.username}</option>
-                ))}
-              </select>
-            </div>
+              <h3>Valorar Barbero</h3>
+              <div id='valoracion'>
+                <div>
+                  <label>Barbero:</label>
+                  <br/>
+                  <select value={barberName} onChange={(e) => setBarberName(e.target.value)}>
+                  <option value="">Seleccionar barbero</option>
+                  {barberos.map((barbero, index) => (
+                    <option key={index} value={barbero.username}>{barbero.username}</option>
+                  ))}
+                  </select>
+                </div>
             <label>Calificación:</label>
             <div>
               <Star selected={rating >= 1} onClick={() => setRating(1)} />
@@ -538,10 +547,12 @@ const ClientePage = () => {
             </div>
             <br />
             <label>Comentario:</label>
+            <br/>
             <input type="text" value={comment} onChange={(e) => setComment(e.target.value)} />
             <br />
             <button onClick={handleSubmitReview}>Enviar Valoración</button>
             <button onClick={handleCloseReviewSection}>Cancelar</button>
+            </div>
           </div>
           </div>
         )}
@@ -549,17 +560,21 @@ const ClientePage = () => {
       {showForm && (
         <div className='cliente'>
           <div className={`cliente-content ${showForm ? 'fade-in' : ''}`}>
-            <form onSubmit={handleUpdateUserInfo}>
+          <h3>Actualizar Usuario</h3>
+            <form id='actualizar-cliente' onSubmit={handleUpdateUserInfo}>
               <div>
                 <label>Nombre de usuario:</label>
+                <br/>
                 <input type="text" name="username" value={formData.username} onChange={handleChange} />
               </div>
               <div>
                 <label>Email:</label>
+                <br/>
                 <input type="email" name="email" value={formData.email} onChange={handleChange} />
               </div>
               <div>
                 <label>Contraseña:</label>
+                <br/>
                 <input type="password" name="password" value={formData.password} onChange={handleChange} />
               </div>
               <button type="submit">Actualizar información</button>

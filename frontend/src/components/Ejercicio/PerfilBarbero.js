@@ -36,7 +36,14 @@ const BarberoPage = () => {
             Authorization: `${token}`
           }
         });
-        setCitas(response.data.citasBarbero);
+        const citasData = response.data.citasBarbero.map(cita => ({
+          ...cita,
+          date: new Date(cita.date)
+        }));
+        citasData.forEach(cita => {
+          cita.date.setHours(cita.date.getHours() - 2);
+        });
+        setCitas(citasData);
       } catch (error) {
         console.error('Error al obtener citas del barbero. Por favor, intenta nuevamente más tarde.');
       }
@@ -49,7 +56,7 @@ const BarberoPage = () => {
             Authorization: `${token}`
           }
         });
-        console.log(response.data); // Agregar esta línea para depuración
+        console.log(response.data);
         setReviews(response.data);
       } catch (error) {
         console.error('Error al obtener valoraciones. Por favor, intenta nuevamente más tarde.');
@@ -138,9 +145,10 @@ const BarberoPage = () => {
           <div className='barber'>
             <div className={`barber-content ${showSection === 'update' ? 'fade-in' : ''}`}>
               <h3>Actualizar Usuario</h3>
-              <form onSubmit={handleUpdateInfo}>
+              <form id='actualizar-barbero' onSubmit={handleUpdateInfo}>
                 <div>
-                  <label htmlFor="newUsername">Nuevo Nombre de Usuario:</label>
+                  <label htmlFor="newUsername">Nuevo Nombre de Usuario</label>
+                  <br/>
                   <input
                     type="text"
                     id="newUsername"
@@ -149,7 +157,8 @@ const BarberoPage = () => {
                   />
                 </div>
                 <div>
-                  <label htmlFor="newEmail">Nuevo Email:</label>
+                  <label htmlFor="newEmail">Nuevo Email</label>
+                  <br/>
                   <input
                     type="email"
                     id="newEmail"
@@ -158,7 +167,8 @@ const BarberoPage = () => {
                   />
                 </div>
                 <div>
-                  <label htmlFor="newPassword">Nueva Contraseña:</label>
+                  <label htmlFor="newPassword">Nueva Contraseña</label>
+                  <br/>
                   <input
                     type="password"
                     id="newPassword"
@@ -177,11 +187,22 @@ const BarberoPage = () => {
           <div className='barber'>
             <div className={`barber-content ${showSection === 'clientes' ? 'fade-in' : ''}`}>
               <h3>Clientes:</h3>
-              <ul>
-                {clientes.map((cliente, index) => (
-                  <li key={index}>{cliente.username} - {cliente.email}</li>
-                ))}
-              </ul>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nombre de Usuario</th>
+                    <th>Email</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {clientes.map((cliente, index) => (
+                    <tr key={index}>
+                      <td>{cliente.username}</td>
+                      <td>{cliente.email}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         )}
@@ -189,19 +210,33 @@ const BarberoPage = () => {
           <div className='barber'>
             <div className={`barber-content ${showSection === 'citas' ? 'fade-in' : ''}`}>
               <h3>Citas:</h3>
-              <ul>
-                {citas.map((cita, index) => {
-                  const citaDate = new Date(cita.date);
-                  citaDate.setHours(citaDate.getHours() - 2);
-                  return (
-                    <li key={index}>
-                      <p>Cliente: {cita.client ? cita.client.username : 'Cliente desconocido'}</p>
-                      <p>Título: {cita.title}</p>
-                      <p>Fecha: {citaDate.toLocaleString()}</p>
-                    </li>
-                  );
-                })}
-              </ul>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Cliente</th>
+                    <th>Título</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {citas
+                  .sort((a, b) => new Date(a.date) - new Date(b.date) || new Date(a.date) - new Date(b.date))
+                  .map((cita, index) => {
+                    const citaDate = new Date(cita.date);
+                    const formattedDate = citaDate.toLocaleDateString();
+                    const formattedTime = citaDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    return (
+                      <tr key={index}>
+                        <td>{cita.client ? cita.client.username : 'Cliente desconocido'}</td>
+                        <td>{cita.title}</td>
+                        <td>{formattedDate}</td>
+                        <td>{formattedTime}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
           </div>
         )}
@@ -209,18 +244,27 @@ const BarberoPage = () => {
           <div className='barber'>
             <div className={`barber-content ${showSection === 'reviews' ? 'fade-in' : ''}`}>
               <h3>Valoraciones:</h3>
-              <ul>
-                {reviews.map((review, index) => {
-                  const clientUsername = review.user ? review.user.username : 'Cliente desconocido';
-                  return (
-                    <li key={index}>
-                      <p>Cliente: {clientUsername}</p>
-                      <p>Calificación: {review.rating}</p>
-                      <p>Comentario: {review.comment}</p>
-                    </li>
-                  );
-                })}
-              </ul>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Cliente</th>
+                    <th>Calificación</th>
+                    <th>Comentario</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {reviews.map((review, index) => {
+                    const clientUsername = review.user ? review.user.username : 'Cliente desconocido';
+                    return (
+                      <tr key={index}>
+                        <td>{clientUsername}</td>
+                        <td>{review.rating}</td>
+                        <td>{review.comment}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
           </div>
         )}

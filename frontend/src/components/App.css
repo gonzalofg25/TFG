@@ -366,6 +366,7 @@ background: linear-gradient(36deg, rgba(109,142,170,1) 50%, rgba(33,3,221,1) 100
   margin: 0; /* Elimina cualquier margen que pueda tener */
   padding-top: 50px; /* Agrega espacio superior para el título */
   box-sizing: border-box;
+  font-family: 'Josefins', serif;
 }
 
 #barber-container{
@@ -373,7 +374,6 @@ background: linear-gradient(36deg, rgba(109,142,170,1) 50%, rgba(33,3,221,1) 100
 }
 
 #barber-tit{
-  font-family: 'Josefins', serif;
   text-align: center;
   color: white;
 }
@@ -388,12 +388,86 @@ background: linear-gradient(36deg, rgba(109,142,170,1) 50%, rgba(33,3,221,1) 100
 }
 
 .barber-content{
-  font-family: 'Josefins',serif;
+  font-family: 'Josefins', serif;
 }
 
 .barber-content h3{
   color: #585a59;
 }
+
+.barber-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-family: 'Josefins', serif;
+}
+
+.barber-content th, .barber-content td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.barber-content th {
+  background-color: #f2f2f2;
+  text-align: left;
+}
+
+.barber-content tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.barber-content tr:hover {
+  background-color: #ddd;
+}
+
+.barber-content th {
+  text-align: center;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  background-color: #086281;
+  color: white;
+}
+
+#actualizar-barbero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-top: 60px;
+}
+
+#actualizar-barbero div {
+  margin-bottom: 30px; /* Ajusta este valor para aumentar o disminuir el espacio */
+}
+
+#actualizar-barbero label {
+  font-weight: bold;
+}
+
+#actualizar-barbero input {
+  font-family: 'Josefins',serif;
+  width: 300px;
+  padding: 8px;
+  margin-top: 5px;
+  box-sizing: border-box;
+}
+
+#actualizar-barbero button {
+  font-family: 'Josefins',serif;
+  font-size: 17px;
+  width: auto;
+  padding: 18px 30px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#actualizar-barbero button:hover {
+  background-color: #0056b3;
+}
+
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 
@@ -406,6 +480,10 @@ background: linear-gradient(36deg, rgba(109,142,170,1) 50%, rgba(33,3,221,1) 100
   margin: 0; /* Elimina cualquier margen que pueda tener */
   padding-top: 50px; /* Agrega espacio superior para el título */
   box-sizing: border-box;
+}
+
+.cliente-content h3{
+  color: #585a59;
 }
 
 #cliente-container{
@@ -459,4 +537,59 @@ background: linear-gradient(36deg, rgba(109,142,170,1) 50%, rgba(33,3,221,1) 100
   padding-bottom: 12px;
   background-color: #086281;
   color: white;
+}
+
+#actualizar-cliente {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-top: 60px;
+  font-family: 'Josefins',serif;
+}
+
+#actualizar-cliente div {
+  margin-bottom: 30px; /* Ajusta este valor para aumentar o disminuir el espacio */
+}
+
+#actualizar-cliente label {
+  font-weight: bold;
+}
+
+#actualizar-cliente input {
+  font-family: 'Josefins',serif;
+  width: 300px;
+  padding: 8px;
+  margin-top: 5px;
+  box-sizing: border-box;
+}
+
+#actualizar-cliente button {
+  font-family: 'Josefins',serif;
+  font-size: 17px;
+  width: auto;
+  padding: 18px 30px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#actualizar-cliente button:hover {
+  background-color: #0056b3;
+}
+
+#valoracion{
+  align-items: center;
+  text-align: center;
+  margin-top: 60px;
+}
+
+#valoracion div {
+  margin-bottom: 30px; /* Ajusta este valor para aumentar o disminuir el espacio */
+}
+
+#valoracion button{
+  margin-top: 20px;
 }
