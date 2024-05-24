@@ -8,7 +8,9 @@ import 'react-calendar/dist/Calendar.css';
 Modal.setAppElement('#root');
 
 const Star = ({ selected = false, onClick = () => {} }) => (
-  <span onClick={onClick}>{selected ? "★" : "☆"}</span>
+  <span onClick={onClick} className={`star ${selected ? 'selected' : ''}`}>
+    {selected ? "★" : "☆"}
+  </span>
 );
 
 const ClientePage = () => {
@@ -36,6 +38,7 @@ const ClientePage = () => {
   const [showReviewSection, setShowReviewSection] = useState(false);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
+  
 
   useEffect(() => {
     const fetchBarbers = async () => {
@@ -45,7 +48,33 @@ const ClientePage = () => {
             Authorization: `${token}`
           }
         });
-        setBarberos(response.data);
+    
+        const validBarbers = response.data.filter(barber => barber && barber.username);
+    
+        const barbersData = await Promise.all(validBarbers.map(async (barber) => {
+          try {
+            const ratingResponse = await axios.get(`http://localhost:3000/api/review/media/${barber.username}`, {
+              headers: {
+                Authorization: `${token}`
+              }
+            });
+            
+            console.log('Respuesta de valoración para', barber.username, ':', ratingResponse.data);
+            
+            const { averageRating, totalVotes } = ratingResponse.data;
+            
+            return { ...barber, rating: averageRating, totalVotes: totalVotes };
+          } catch (error) {
+            console.error('Error al obtener valoración para', barber.username, ':', error);
+            return null;
+          }
+        }));
+        
+    
+        const filteredBarbersData = barbersData.filter(barber => barber !== null);
+    
+        setBarberos(filteredBarbersData);
+        console.log("Estado barberos después de actualizar:", filteredBarbersData);
       } catch (error) {
         console.error('Error al obtener barberos:', error);
       }
@@ -206,23 +235,30 @@ const ClientePage = () => {
 
   const handleViewAppointments = async () => {
     try {
-      console.log('Obteniendo citas...');
-      if (showCitas) {
-        setShowCitas(false);
-      } else {
-        const response = await axios.get('http://localhost:3000/api/appoint/citasusuario', {
-          headers: {
-            Authorization: `${token}`
-          }
-        });
-        console.log('Citas obtenidas:', response.data);
-        setCitas(response.data.citasUsuario);
-        setShowCitas(true);
-      }
+        console.log('Obteniendo citas...');
+        if (showCitas) {
+            setShowCitas(false);
+        } else {
+            const response = await axios.get('http://localhost:3000/api/appoint/citasusuario', {
+                headers: {
+                    Authorization: `${token}`
+                }
+            });
+            console.log('Citas obtenidas:', response.data);
+            const citasUsuario = response.data.citasUsuario;
+
+            if (citasUsuario.length === 0) {
+                alert('No tienes ninguna cita reservada.');
+            } else {
+                setCitas(citasUsuario);
+                setShowCitas(true);
+            }
+        }
     } catch (error) {
-      console.error('Error al obtener citas:', error);
+        console.error('Error al obtener citas:', error);
     }
-  };
+};
+
 
   const handleModifyAppointment = async (citaId) => {
     try {
@@ -354,160 +390,184 @@ const ClientePage = () => {
       alert('Ha ocurrido un error al enviar la valoración. Por favor, intenta nuevamente más tarde.');
     }
   };
+  
 
   return (
-    <div>
-      <h2>Bienvenido, {username}!</h2>
-      <p>Esta es la página para usuarios con rol "cliente". Aquí puedes mostrar información específica del usuario.</p>
-
-      <button onClick={() => setShowForm(!showForm)}>Actualizar información</button>
-
-      {showForm && (
-        <form onSubmit={handleUpdateUserInfo}>
-          <div>
-            <label>Nombre de usuario:</label>
-            <input type="text" name="username" value={formData.username} onChange={handleChange} />
-          </div>
-          <div>
-            <label>Email:</label>
-            <input type="email" name="email" value={formData.email} onChange={handleChange} />
-          </div>
-          <div>
-            <label>Contraseña:</label>
-            <input type="password" name="password" value={formData.password} onChange={handleChange} />
-          </div>
-          <button type="submit">Actualizar información</button>
-        </form>
-      )}
-
-      <button onClick={handleShowBarbers}>Mostrar Barberos</button>
+    <div id='cliente'>
+      <div id='cliente-container'>
+      <h2 id='cliente-tit'>Bienvenido, {username}!</h2>
+      <nav className='horizontal-menu'>
+        <button onClick={handleShowBarbers}>Mostrar Barberos</button>
+        <button onClick={() => setModalIsOpen(true)}>Seleccionar cita</button>
+        <button onClick={handleViewAppointments}>Ver Citas</button>
+        <button onClick={handleOpenReviewSection}>Valorar Barbero</button>
+        <button onClick={() => setShowForm(!showForm)}>Actualizar información</button>
+        <button id='cerrarsesion' onClick={handleLogout}>Cerrar Sesión</button>
+      </nav>
 
       {showBarberos && (
-        <div>
-          <h3>Barberos:</h3>
+  <div className='cliente'>
+    <div className={`cliente-content ${showBarberos ? 'fade-in' : ''}`}>
+      <h3>Barberos:</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Usuario</th>
+            <th>Gmail</th>
+            <th>Valoración media (Votos)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {barberos.map((barbero, index) => (
+            <tr key={index} onClick={() => handleSelectBarber(barbero)}>
+              <td>{barbero.username}</td>
+              <td>{barbero.email}</td>
+              <td>{barbero.rating} ({barbero.totalVotes})</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+)}
+
+
+
+      {showCitas && citas.length > 0 && (
+        <div className='cliente'>
+          <div className={`cliente-content ${showCitas && citas.length > 0 ? 'fade-in' : ''}`}>
+          <h3>Citas:</h3>
           <ul>
-            {barberos.map((barbero, index) => (
-              <li key={index} onClick={() => handleSelectBarber(barbero)}>{barbero.username} - {barbero.email}</li>
+            {citas.map((cita, index) => (
+              <li key={index}>
+                {cita.barber ? (
+                  <>
+                    <p>Barbero: {cita.barber.username}</p>
+                    <p>Título: {cita.title}</p>
+                    <p>Fecha: {new Date(new Date(cita.date).getTime() - (2 * 60 * 60 * 1000)).toLocaleString()}</p>
+                    <button onClick={() => handleModifyAppointment(cita._id)}>Modificar</button>
+                    <button onClick={() => handleCancelConfirmation(cita._id)}>Cancelar Cita</button>
+                  </>
+                ) : (
+                  <p>Error: Información del barbero no disponible</p>
+                )}
+              </li>
             ))}
           </ul>
+          </div>
         </div>
       )}
 
-      <button onClick={() => setModalIsOpen(true)}>Seleccionar cita</button>
 
-<button onClick={handleViewAppointments}>Ver Citas</button>
-
-{showCitas && citas.length > 0 && (
-  <div>
-    <h3>Citas:</h3>
-    <ul>
-      {citas.map((cita, index) => (
-        <li key={index}>
-          {cita.barber ? (
-            <>
-              <p>Barbero: {cita.barber.username}</p>
-              <p>Título: {cita.title}</p>
-              <p>Fecha: {new Date(new Date(cita.date).getTime() - (2 * 60 * 60 * 1000)).toLocaleString()}</p>
-              <button onClick={() => handleModifyAppointment(cita._id)}>Modificar</button>
-              <button onClick={() => handleCancelConfirmation(cita._id)}>Cancelar</button>
-            </>
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={() => setModalIsOpen(false)}
+        contentLabel="Seleccionar cita"
+      >
+        <h2>Seleccionar cita</h2>
+        <form onSubmit={handleSubmitAppointment}>
+          <div>
+            <label>Barbero:</label>
+            <select value={barberName} onChange={(e) => setBarberName(e.target.value)}>
+              <option value="">Seleccionar barbero</option>
+              {barberos.map((barbero, index) => (
+                <option key={index} value={barbero.username}>{barbero.username}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label>Fecha:</label>
+            <Calendar 
+              value={date} 
+              onChange={handleDateChange} 
+              tileDisabled={({ date }) => {
+                const today = new Date();
+                const dayOfWeek = date.getDay();
+                const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+                const isBeforeToday = date < today.setHours(0, 0, 0, 0);
+                return isWeekend || isBeforeToday;
+              }} 
+            />
+          </div>
+          {availableTimes.length > 0 ? (
+            <div>
+              <label>Horarios disponibles:</label>
+              <ul>
+                {availableTimes.map((time, index) => (
+                  <li key={index} onClick={() => handleTimeSelect(time)}>
+                    <button>{time}</button>
+                  </li>
+                ))}
+              </ul>
+            </div>
           ) : (
-            <p>Error: Información del barbero no disponible</p>
+            <p>No hay horarios disponibles para este barbero en esta fecha.</p>
           )}
-        </li>
-      ))}
-    </ul>
-  </div>
-)}
+          <div>
+            <label>Título:</label>
+            <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
+          </div>
+          <div>
+            <label>Descripción:</label>
+            <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} />
+          </div>
+        </form>
+      </Modal>
 
+        {/* Sección para valorar barberos */}
+        {showReviewSection && (
+          <div className='cliente'>
+            <div className={`cliente-content ${showReviewSection ? 'fade-in' : ''}`}>
+            <h3>Valorar Barbero</h3>
+            <div>
+              <label>Barbero:</label>
+              <select value={barberName} onChange={(e) => setBarberName(e.target.value)}>
+                <option value="">Seleccionar barbero</option>
+                {barberos.map((barbero, index) => (
+                  <option key={index} value={barbero.username}>{barbero.username}</option>
+                ))}
+              </select>
+            </div>
+            <label>Calificación:</label>
+            <div>
+              <Star selected={rating >= 1} onClick={() => setRating(1)} />
+              <Star selected={rating >= 2} onClick={() => setRating(2)} />
+              <Star selected={rating >= 3} onClick={() => setRating(3)} />
+              <Star selected={rating >= 4} onClick={() => setRating(4)} />
+              <Star selected={rating >= 5} onClick={() => setRating(5)} />
+            </div>
+            <br />
+            <label>Comentario:</label>
+            <input type="text" value={comment} onChange={(e) => setComment(e.target.value)} />
+            <br />
+            <button onClick={handleSubmitReview}>Enviar Valoración</button>
+            <button onClick={handleCloseReviewSection}>Cancelar</button>
+          </div>
+          </div>
+        )}
 
-<Modal
-  isOpen={modalIsOpen}
-  onRequestClose={() => setModalIsOpen(false)}
-  contentLabel="Seleccionar cita"
->
-  <h2>Seleccionar cita</h2>
-  <form onSubmit={handleSubmitAppointment}>
-    <div>
-      <label>Barbero:</label>
-      <select value={barberName} onChange={(e) => setBarberName(e.target.value)}>
-        <option value="">Seleccionar barbero</option>
-        {barberos.map((barbero, index) => (
-          <option key={index} value={barbero.username}>{barbero.username}</option>
-        ))}
-      </select>
-    </div>
-    <div>
-      <label>Fecha:</label>
-      <Calendar 
-        value={date} 
-        onChange={handleDateChange} 
-        tileDisabled={({ date }) => {
-          const today = new Date();
-          const dayOfWeek = date.getDay();
-          const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-          const isBeforeToday = date < today.setHours(0, 0, 0, 0);
-          return isWeekend || isBeforeToday;
-        }} 
-      />
-    </div>
-    {availableTimes.length > 0 ? (
-      <div>
-        <label>Horarios disponibles:</label>
-        <ul>
-          {availableTimes.map((time, index) => (
-            <li key={index} onClick={() => handleTimeSelect(time)}>
-              <button>{time}</button>
-            </li>
-          ))}
-        </ul>
-      </div>
-    ) : (
-      <p>No hay horarios disponibles para este barbero en esta fecha.</p>
-    )}
-    <div>
-      <label>Título:</label>
-      <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
-    </div>
-    <div>
-      <label>Descripción:</label>
-      <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} />
-    </div>
-    <button type="submit">Programar cita</button>
-  </form>
-</Modal>
-
-{/* Sección para valorar barberos */}
-<button onClick={handleOpenReviewSection}>Valorar Barbero</button>
-{showReviewSection && (
-  <div>
-    <h3>Valorar Barbero</h3>
-    <div>
-      <label>Barbero:</label>
-      <select value={barberName} onChange={(e) => setBarberName(e.target.value)}>
-        <option value="">Seleccionar barbero</option>
-        {barberos.map((barbero, index) => (
-          <option key={index} value={barbero.username}>{barbero.username}</option>
-        ))}
-      </select>
-    </div>
-    <label>Calificación:</label>
-    <div>
-      <Star selected={rating >= 1} onClick={() => setRating(1)} />
-      <Star selected={rating >= 2} onClick={() => setRating(2)} />
-      <Star selected={rating >= 3} onClick={() => setRating(3)} />
-      <Star selected={rating >= 4} onClick={() => setRating(4)} />
-      <Star selected={rating >= 5} onClick={() => setRating(5)} />
-    </div>
-    <br />
-    <label>Comentario:</label>
-    <input type="text" value={comment} onChange={(e) => setComment(e.target.value)} />
-    <br />
-    <button onClick={handleSubmitReview}>Enviar Valoración</button>
-    <button onClick={handleCloseReviewSection}>Cancelar</button>
-  </div>
-)}
-<button onClick={handleLogout}>Cerrar Sesión</button>
+      {showForm && (
+        <div className='cliente'>
+          <div className={`cliente-content ${showForm ? 'fade-in' : ''}`}>
+            <form onSubmit={handleUpdateUserInfo}>
+              <div>
+                <label>Nombre de usuario:</label>
+                <input type="text" name="username" value={formData.username} onChange={handleChange} />
+              </div>
+              <div>
+                <label>Email:</label>
+                <input type="email" name="email" value={formData.email} onChange={handleChange} />
+              </div>
+              <div>
+                <label>Contraseña:</label>
+                <input type="password" name="password" value={formData.password} onChange={handleChange} />
+              </div>
+              <button type="submit">Actualizar información</button>
+            </form>
+          </div>
+        </div>
+      )}
+</div>
 </div>
 );
 };

@@ -246,16 +246,31 @@ background: linear-gradient(36deg, rgba(109,142,170,1) 50%, rgba(33,3,221,1) 100
   height: 100%;
 }
 
-.admin-content,.barber-content {
+.admin-content,.barber-content, .cliente-content {
   background-color: white; /* Solo para mayor claridad visual */
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   height: 600px;
   width: 100%;
+  overflow-y: auto;
 }
 
-.admin-content h3{
+.fade-in {
+  animation: fadeIn 0.8s ease-in-out forwards;
+  opacity: 0;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.admin-content h3, .barber-content h3, .cliente-content h3{
   text-align: center;
   font-family: 'Josefins', serif;
 }
@@ -360,5 +375,88 @@ background: linear-gradient(36deg, rgba(109,142,170,1) 50%, rgba(33,3,221,1) 100
 #barber-tit{
   font-family: 'Josefins', serif;
   text-align: center;
+  color: white;
+}
+
+#barber-container li{
+  list-style-type: none;
+  line-height: 30px;
+}
+
+#citas-barbero{
+  border: 3px solid blue;
+}
+
+.barber-content{
+  font-family: 'Josefins',serif;
+}
+
+.barber-content h3{
+  color: #585a59;
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+
+#cliente{
+  background-color: #808080; /* Gris medio como color base */
+  background-image: linear-gradient(135deg, #808080, #ceb857c7);  
+  min-height: 100vh; /* Esto asegura que cubra al menos toda la altura de la ventana */
+  height: 100%; /* Asegura que ocupe el 100% de la altura de la pantalla */
+  width: 100%; /* Asegura que ocupe el 100% del ancho de la pantalla */
+  margin: 0; /* Elimina cualquier margen que pueda tener */
+  padding-top: 50px; /* Agrega espacio superior para el título */
+  box-sizing: border-box;
+}
+
+#cliente-container{
+  margin: 0 20%;
+}
+
+#cliente-tit{
+  font-family: 'Josefins', serif;
+  text-align: center;
+  color: white;
+}
+
+.star {
+  font-size: 2em;
+  cursor: pointer;
+  color: gray;
+}
+
+.star.selected {
+  color: rgb(224, 224, 107);
+}
+
+.cliente-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-family: 'Josefins', serif;
+}
+
+.cliente-content th, .cliente-content td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.cliente-content th {
+  background-color: #f2f2f2;
+  text-align: left;
+}
+
+.cliente-content tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.cliente-content tr:hover {
+  background-color: #ddd;
+}
+
+.cliente-content th {
+  text-align: center;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  background-color: #086281;
   color: white;
 }

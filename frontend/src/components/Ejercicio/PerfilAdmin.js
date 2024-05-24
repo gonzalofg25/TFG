@@ -105,7 +105,7 @@ const AdminPage = () => {
 
         {openModal === 'users' && (
           <div className="admin">
-            <div className="admin-content">
+            <div className={`admin-content ${openModal === 'users' ? 'fade-in' : ''}`}>
               <h3>Lista de Usuarios</h3>
               <table>
                 <thead>
@@ -131,7 +131,7 @@ const AdminPage = () => {
 
         {openModal === 'delete' && (
           <div className="admin">
-            <div className="admin-content">
+            <div className={`admin-content ${openModal === 'delete' ? 'fade-in' : ''}`}>
               <h3>Eliminar Usuario</h3>
               <form onSubmit={handleDeleteUser}>
                 <div>
@@ -146,7 +146,7 @@ const AdminPage = () => {
 
         {openModal === 'reviews' && (
           <div className="admin">
-            <div className="admin-content">
+            <div className={`admin-content ${openModal === 'reviews' ? 'fade-in' : ''}`}>
               <h3>Lista de Valoraciones</h3>
               <table>
                 <thead>

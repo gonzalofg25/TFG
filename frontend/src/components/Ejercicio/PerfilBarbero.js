@@ -49,6 +49,7 @@ const BarberoPage = () => {
             Authorization: `${token}`
           }
         });
+        console.log(response.data); // Agregar esta línea para depuración
         setReviews(response.data);
       } catch (error) {
         console.error('Error al obtener valoraciones. Por favor, intenta nuevamente más tarde.');
@@ -105,6 +106,10 @@ const BarberoPage = () => {
     if (showSection === section) {
       setShowSection(null);
     } else {
+      if (section === 'citas' && citas.length === 0) {
+        alert('No tienes ninguna cita reservada.');
+        return;
+      }
       setShowSection(section);
     }
   };
@@ -131,7 +136,8 @@ const BarberoPage = () => {
 
         {showSection === 'update' && (
           <div className='barber'>
-            <div className='barber-content'>
+            <div className={`barber-content ${showSection === 'update' ? 'fade-in' : ''}`}>
+              <h3>Actualizar Usuario</h3>
               <form onSubmit={handleUpdateInfo}>
                 <div>
                   <label htmlFor="newUsername">Nuevo Nombre de Usuario:</label>
@@ -169,7 +175,7 @@ const BarberoPage = () => {
         {updateError && <p>{updateError}</p>}
         {showSection === 'clientes' && (
           <div className='barber'>
-            <div className='barber-content'>
+            <div className={`barber-content ${showSection === 'clientes' ? 'fade-in' : ''}`}>
               <h3>Clientes:</h3>
               <ul>
                 {clientes.map((cliente, index) => (
@@ -181,7 +187,7 @@ const BarberoPage = () => {
         )}
         {showSection === 'citas' && (
           <div className='barber'>
-            <div className='barber-content'>
+            <div className={`barber-content ${showSection === 'citas' ? 'fade-in' : ''}`}>
               <h3>Citas:</h3>
               <ul>
                 {citas.map((cita, index) => {
@@ -201,16 +207,19 @@ const BarberoPage = () => {
         )}
         {showSection === 'reviews' && (
           <div className='barber'>
-            <div className='barber-content'>
+            <div className={`barber-content ${showSection === 'reviews' ? 'fade-in' : ''}`}>
               <h3>Valoraciones:</h3>
               <ul>
-                {reviews.map((review, index) => (
-                  <li key={index}>
-                    <p>Cliente: {review.cliente}</p>
-                    <p>Calificación: {review.rating}</p>
-                    <p>Comentario: {review.comment}</p>
-                  </li>
-                ))}
+                {reviews.map((review, index) => {
+                  const clientUsername = review.user ? review.user.username : 'Cliente desconocido';
+                  return (
+                    <li key={index}>
+                      <p>Cliente: {clientUsername}</p>
+                      <p>Calificación: {review.rating}</p>
+                      <p>Comentario: {review.comment}</p>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           </div>
