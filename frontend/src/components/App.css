@@ -584,12 +584,48 @@ background: linear-gradient(36deg, rgba(109,142,170,1) 50%, rgba(33,3,221,1) 100
   align-items: center;
   text-align: center;
   margin-top: 60px;
+  font-family: 'Josefins',serif;
 }
 
 #valoracion div {
   margin-bottom: 30px; /* Ajusta este valor para aumentar o disminuir el espacio */
 }
 
+.valoracion-usuario{
+  margin-bottom: 30px;
+}
+
 #valoracion button{
   margin-top: 20px;
+}
+
+.review-cliente{
+  font-family: 'Josefins',serif;
+  padding: 10px 16px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.cliente-content ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.cliente-content ul li {
+  border: 2px solid #000; /* Borde para las citas */
+  background-color: #f0f0f0; /* Color de fondo para las citas */
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.cliente-content ul li p {
+  margin: 5px 0;
+}
+
+.cliente-content ul li button {
+  margin-right: 10px;
 }

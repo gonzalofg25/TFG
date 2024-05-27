@@ -136,6 +136,31 @@ export async function cancelarCita(req, res) {
   }
 }
 
+export async function cancelarCitaBarbero(req, res) {
+  try {
+    const { citaId } = req.params;
+    const barberId = req.user.id;
+
+    const cita = await Appointment.findById(citaId);
+
+    if (!cita) {
+      return res.status(404).json({ message: "La cita no existe" });
+    }
+
+    if (cita.barber.toString() !== barberId) {
+      return res.status(403).json({ message: "No tienes permiso para cancelar esta cita" });
+    }
+
+    await Appointment.findByIdAndDelete(citaId);
+
+    return res.status(200).json({ message: 'Cita cancelada con éxito' });
+  } catch (error) {
+    console.error('Error al cancelar la cita del barbero:', error);
+    return res.status(500).json({ message: 'Error interno del servidor' });
+  }
+}
+
+
 export async function getCitasBarberoEnFecha(req, res) {
   try {
     const { barberName, date } = req.params;

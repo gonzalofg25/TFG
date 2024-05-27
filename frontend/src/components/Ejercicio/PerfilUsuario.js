@@ -21,10 +21,8 @@ const ClientePage = () => {
     email: '',
     password: ''
   });
-  const [showForm, setShowForm] = useState(false);
   const [currentUserData] = useState({});
   const [barberos, setBarberos] = useState([]);
-  const [showBarberos, setShowBarberos] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [barberName, setBarberName] = useState('');
   const [date, setDate] = useState(new Date());
@@ -34,10 +32,11 @@ const ClientePage = () => {
   const [token] = useState(localStorage.getItem('token'));
   const [availableTimes, setAvailableTimes] = useState([]);
   const [citas, setCitas] = useState([]);
-  const [showCitas, setShowCitas] = useState(false);
-  const [showReviewSection, setShowReviewSection] = useState(false);
+  const [,setShowCitas] = useState(false);
+  const [,setShowReviewSection] = useState(false);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
+  const [visibleSection, setVisibleSection] = useState('');
   
 
   useEffect(() => {
@@ -89,11 +88,10 @@ const ClientePage = () => {
 
   const handleShowBarbers = async () => {
     try {
-      if (showBarberos) {
-        setShowBarberos(false);
+      if (visibleSection === 'barberos') {
+        setVisibleSection('');
       } else {
-        setShowBarberos(true);
-        setShowForm(false);
+        setVisibleSection('barberos');
       }
     } catch (error) {
       console.error('Error al obtener barberos:', error);
@@ -109,7 +107,7 @@ const ClientePage = () => {
         email: email || currentUserData.email,
         password
       };
-
+  
       await axios.put(
         'http://localhost:3000/api/user/modificar',
         data,
@@ -119,15 +117,15 @@ const ClientePage = () => {
           }
         }
       );
-
+  
       setFormData({
         username: '',
         email: '',
         password: ''
       });
-
+  
       localStorage.removeItem('token');
-
+  
       alert('¡Información actualizada correctamente!');
       window.location.href = '/login';
     } catch (error) {
@@ -235,38 +233,38 @@ const ClientePage = () => {
 
   const handleViewAppointments = async () => {
     try {
-        console.log('Obteniendo citas...');
-        if (showCitas) {
-            setShowCitas(false);
+      console.log('Obteniendo citas...');
+      if (visibleSection === 'citas') {
+        setVisibleSection('');
+      } else {
+        const response = await axios.get('http://localhost:3000/api/appoint/citasusuario', {
+          headers: {
+            Authorization: `${token}`
+          }
+        });
+        console.log('Citas obtenidas:', response.data);
+        const citasUsuario = response.data.citasUsuario;
+  
+        if (citasUsuario.length === 0) {
+          alert('No tienes ninguna cita reservada.');
         } else {
-            const response = await axios.get('http://localhost:3000/api/appoint/citasusuario', {
-                headers: {
-                    Authorization: `${token}`
-                }
-            });
-            console.log('Citas obtenidas:', response.data);
-            const citasUsuario = response.data.citasUsuario;
-
-            if (citasUsuario.length === 0) {
-                alert('No tienes ninguna cita reservada.');
-            } else {
-                citasUsuario.sort((a, b) => {
-                    const dateA = new Date(a.date);
-                    const dateB = new Date(b.date);
-                    if (dateA.getTime() !== dateB.getTime()) {
-                        return dateA.getTime() - dateB.getTime();
-                    }
-                    return 0;
-                });
-
-                setCitas(citasUsuario);
-                setShowCitas(true);
+          citasUsuario.sort((a, b) => {
+            const dateA = new Date(a.date);
+            const dateB = new Date(b.date);
+            if (dateA.getTime() !== dateB.getTime()) {
+              return dateA.getTime() - dateB.getTime();
             }
+            return 0;
+          });
+  
+          setCitas(citasUsuario);
+          setVisibleSection('citas');
         }
+      }
     } catch (error) {
-        console.error('Error al obtener citas:', error);
+      console.error('Error al obtener citas:', error);
     }
-};
+  };
 
 
 const handleModifyAppointment = async (citaId) => {
@@ -369,8 +367,12 @@ const handleModifyAppointment = async (citaId) => {
   };
 
   const handleOpenReviewSection = () => {
-    setShowReviewSection(prevState => !prevState);
-    setBarberName('');
+    if (visibleSection === 'review') {
+      setVisibleSection('');
+    } else {
+      setVisibleSection('review');
+      setBarberName('');
+    }
   };
 
   const handleCloseReviewSection = () => {
@@ -399,6 +401,14 @@ const handleModifyAppointment = async (citaId) => {
       alert('Ha ocurrido un error al enviar la valoración. Por favor, intenta nuevamente más tarde.');
     }
   };
+
+  const handleShowForm = () => {
+    if (visibleSection === 'form') {
+      setVisibleSection('');
+    } else {
+      setVisibleSection('form');
+    }
+  };
   
 
   return (
@@ -406,17 +416,26 @@ const handleModifyAppointment = async (citaId) => {
       <div id='cliente-container'>
       <h2 id='cliente-tit'>Bienvenido, {username}!</h2>
       <nav className='horizontal-menu'>
-        <button onClick={handleShowBarbers}>Mostrar Barberos</button>
+        <button onClick={handleShowBarbers}>
+          {visibleSection === 'barberos' ? 'Ocultar Barberos' : 'Mostrar Barberos'}
+        </button>
         <button onClick={() => setModalIsOpen(true)}>Seleccionar cita</button>
-        <button onClick={handleViewAppointments}>Ver Citas</button>
-        <button onClick={handleOpenReviewSection}>Valorar Barbero</button>
-        <button onClick={() => setShowForm(!showForm)}>Actualizar información</button>
+        <button onClick={handleViewAppointments}>
+          {visibleSection === 'citas' ? 'Ocultar Citas' : 'Ver Citas'}
+        </button>
+        <button onClick={handleOpenReviewSection}>
+          {visibleSection === 'review' ? 'Ocultar Valoración' : 'Valorar Barbero'}
+        </button>
+        <button onClick={handleShowForm}>
+          {visibleSection === 'form' ? 'Ocultar Actualización' : 'Actualizar información'}
+        </button>
         <button id='cerrarsesion' onClick={handleLogout}>Cerrar Sesión</button>
       </nav>
 
-      {showBarberos && (
+      
+      {visibleSection === 'barberos' && (
         <div className='cliente'>
-          <div className={`cliente-content ${showBarberos ? 'fade-in' : ''}`}>
+          <div className={`cliente-content ${visibleSection === 'barberos' ? 'fade-in' : ''}`}>
             <h3>Barberos:</h3>
             <table>
               <thead>
@@ -440,31 +459,30 @@ const handleModifyAppointment = async (citaId) => {
         </div>
       )}
 
-      {showCitas && citas.length > 0 && (
+      {visibleSection === 'citas' && citas.length > 0 && (
         <div className='cliente'>
-          <div className={`cliente-content ${showCitas && citas.length > 0 ? 'fade-in' : ''}`}>
-          <h3>Citas:</h3>
-          <ul>
-            {citas.map((cita, index) => (
-              <li key={index}>
-                {cita.barber ? (
-                  <>
-                    <p>Barbero: {cita.barber.username}</p>
-                    <p>Título: {cita.title}</p>
-                    <p>Fecha: {new Date(new Date(cita.date).getTime() - (2 * 60 * 60 * 1000)).toLocaleString()}</p>
-                    <button onClick={() => handleModifyAppointment(cita._id)}>Modificar</button>
-                    <button onClick={() => handleCancelConfirmation(cita._id)}>Cancelar Cita</button>
-                  </>
-                ) : (
-                  <p>Error: Información del barbero no disponible</p>
-                )}
-              </li>
-            ))}
-          </ul>
+          <div className={`cliente-content ${visibleSection === 'citas' && citas.length > 0 ? 'fade-in' : ''}`}>
+            <h3>Citas:</h3>
+            <ul>
+              {citas.map((cita, index) => (
+                <li key={index}>
+                  {cita.barber ? (
+                    <>
+                      <p>Barbero: {cita.barber.username}</p>
+                      <p>Título: {cita.title}</p>
+                      <p>Fecha: {new Date(new Date(cita.date).getTime() - (2 * 60 * 60 * 1000)).toLocaleString()}</p>
+                      <button onClick={() => handleModifyAppointment(cita._id)}>Modificar</button>
+                      <button onClick={() => handleCancelConfirmation(cita._id)}>Cancelar Cita</button>
+                    </>
+                  ) : (
+                    <p>Error: Información del barbero no disponible</p>
+                  )}
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       )}
-
 
       <Modal
         isOpen={modalIsOpen}
@@ -522,66 +540,66 @@ const handleModifyAppointment = async (citaId) => {
       </Modal>
 
         {/* Sección para valorar barberos */}
-        {showReviewSection && (
+        {visibleSection === 'review' && (
           <div className='cliente'>
-            <div className={`cliente-content ${showReviewSection ? 'fade-in' : ''}`}>
+            <div className={`cliente-content ${visibleSection === 'review' ? 'fade-in' : ''}`}>
               <h3>Valorar Barbero</h3>
               <div id='valoracion'>
                 <div>
                   <label>Barbero:</label>
                   <br/>
+                  <br/>
                   <select value={barberName} onChange={(e) => setBarberName(e.target.value)}>
-                  <option value="">Seleccionar barbero</option>
-                  {barberos.map((barbero, index) => (
-                    <option key={index} value={barbero.username}>{barbero.username}</option>
-                  ))}
+                    <option value="">Seleccionar barbero</option>
+                    {barberos.map((barbero, index) => (
+                      <option key={index} value={barbero.username}>{barbero.username}</option>
+                    ))}
                   </select>
-                </div>
-            <label>Calificación:</label>
-            <div>
-              <Star selected={rating >= 1} onClick={() => setRating(1)} />
-              <Star selected={rating >= 2} onClick={() => setRating(2)} />
-              <Star selected={rating >= 3} onClick={() => setRating(3)} />
-              <Star selected={rating >= 4} onClick={() => setRating(4)} />
-              <Star selected={rating >= 5} onClick={() => setRating(5)} />
+                  </div>
+                  <label>Calificación:</label>
+                  <div>
+                    <Star selected={rating >= 1} onClick={() => setRating(1)} />
+                    <Star selected={rating >= 2} onClick={() => setRating(2)} />
+                    <Star selected={rating >= 3} onClick={() => setRating(3)} />
+                    <Star selected={rating >= 4} onClick={() => setRating(4)} />
+                    <Star selected={rating >= 5} onClick={() => setRating(5)} />
+                  </div>
+                  <label>Comentario:</label>
+                  <br/><br/>
+                  <input type="text" value={comment} onChange={(e) => setComment(e.target.value)} />
+                  <br />
+                  <button className='review-cliente' onClick={handleSubmitReview}>Enviar Valoración</button>
+                  <button className='review-cliente' onClick={handleCloseReviewSection}>Cancelar</button>
+              </div>
             </div>
-            <br />
-            <label>Comentario:</label>
-            <br/>
-            <input type="text" value={comment} onChange={(e) => setComment(e.target.value)} />
-            <br />
-            <button onClick={handleSubmitReview}>Enviar Valoración</button>
-            <button onClick={handleCloseReviewSection}>Cancelar</button>
-            </div>
-          </div>
           </div>
         )}
 
-      {showForm && (
-        <div className='cliente'>
-          <div className={`cliente-content ${showForm ? 'fade-in' : ''}`}>
-          <h3>Actualizar Usuario</h3>
-            <form id='actualizar-cliente' onSubmit={handleUpdateUserInfo}>
-              <div>
-                <label>Nombre de usuario:</label>
-                <br/>
-                <input type="text" name="username" value={formData.username} onChange={handleChange} />
-              </div>
-              <div>
-                <label>Email:</label>
-                <br/>
-                <input type="email" name="email" value={formData.email} onChange={handleChange} />
-              </div>
-              <div>
-                <label>Contraseña:</label>
-                <br/>
-                <input type="password" name="password" value={formData.password} onChange={handleChange} />
-              </div>
-              <button type="submit">Actualizar información</button>
-            </form>
+        {visibleSection === 'form' && (
+          <div className='cliente'>
+            <div className={`cliente-content ${visibleSection === 'form' ? 'fade-in' : ''}`}>
+              <h3>Actualizar Usuario</h3>
+              <form id='actualizar-cliente' onSubmit={handleUpdateUserInfo}>
+                <div>
+                  <label>Nombre de usuario:</label>
+                  <br/>
+                  <input type="text" name="username" value={formData.username} onChange={handleChange} />
+                </div>
+                <div>
+                  <label>Email:</label>
+                  <br/>
+                  <input type="email" name="email" value={formData.email} onChange={handleChange} />
+                </div>
+                <div>
+                  <label>Contraseña:</label>
+                  <br/>
+                  <input type="password" name="password" value={formData.password} onChange={handleChange} />
+                </div>
+                <button type="submit">Actualizar</button>
+              </form>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 </div>
 </div>
 );

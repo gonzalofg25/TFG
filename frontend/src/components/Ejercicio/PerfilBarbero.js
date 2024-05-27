@@ -121,6 +121,58 @@ const BarberoPage = () => {
     }
   };
 
+  const handleDeleteCita = async (citaId) => {
+    try {
+      const confirmDelete = window.confirm('¿Estás seguro que deseas cancelar la cita?');
+  
+      if (!confirmDelete) {
+        return; 
+      }
+  
+      console.log(`Intentando eliminar cita con ID: ${citaId}`);
+      const response = await axios.delete(`http://localhost:3000/api/appoint/citabarbero/${citaId}`, {
+        headers: {
+          Authorization: `${token}`
+        }
+      });
+  
+      console.log('Respuesta del servidor:', response);
+      setCitas(citas.filter(cita => cita._id !== citaId));
+  
+      alert('Cita cancelada exitosamente');
+      setShowSection(null);
+    } catch (error) {
+      console.error('Error al eliminar la cita:', error.response ? error.response.data : error.message);
+      alert('Error al eliminar la cita. Por favor, intenta nuevamente más tarde.');
+    }
+  };
+  
+  const handleCompleteCita = async (citaId) => {
+    try {
+      const confirmDelete = window.confirm('¿Estás seguro que deseas marcar como completada la cita?');
+  
+      if (!confirmDelete) {
+        return;
+      }
+  
+      console.log(`Marcar cómo completada la cita con ID: ${citaId}`);
+      const response = await axios.delete(`http://localhost:3000/api/appoint/citabarbero/${citaId}`, {
+        headers: {
+          Authorization: `${token}`
+        }
+      });
+  
+      console.log('Respuesta del servidor:', response);
+      setCitas(citas.filter(cita => cita._id !== citaId));
+  
+      alert('Cita completada');
+      setShowSection(null);
+    } catch (error) {
+      console.error('Error al completar la cita:', error.response ? error.response.data : error.message);
+      alert('Error al completar la cita. Por favor, intenta nuevamente más tarde.');
+    }
+  }
+  
   return (
     <div id='barber'>
       <div id='barber-container'>
@@ -217,6 +269,8 @@ const BarberoPage = () => {
                     <th>Título</th>
                     <th>Fecha</th>
                     <th>Hora</th>
+                    <th>Borrar</th>
+                    <th>Completada</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -232,6 +286,12 @@ const BarberoPage = () => {
                         <td>{cita.title}</td>
                         <td>{formattedDate}</td>
                         <td>{formattedTime}</td>
+                        <td>
+                          <button onClick={() => handleDeleteCita(cita._id)}>X</button>
+                        </td>
+                        <td>
+                          <button onClick={() => handleCompleteCita(cita._id)}>✔️</button>
+                        </td>
                       </tr>
                     );
                   })}
