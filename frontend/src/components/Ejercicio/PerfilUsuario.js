@@ -377,6 +377,9 @@ const handleModifyAppointment = async (citaId) => {
 
   const handleCloseReviewSection = () => {
     setShowReviewSection(false);
+    setBarberName('');
+    setRating(0);
+    setComment('');
   };
 
   const handleSubmitReview = async () => {
@@ -568,8 +571,9 @@ const handleModifyAppointment = async (citaId) => {
                   <br/><br/>
                   <input type="text" value={comment} onChange={(e) => setComment(e.target.value)} />
                   <br />
-                  <button className='review-cliente' onClick={handleSubmitReview}>Enviar Valoración</button>
-                  <button className='review-cliente' onClick={handleCloseReviewSection}>Cancelar</button>
+                  <button id='review-enviar' className='review-cliente' onClick={handleSubmitReview}>Enviar Valoración</button>
+                  <br/>
+                  <button id='review-cancelar' className='review-cliente' onClick={handleCloseReviewSection}>Cancelar</button>
               </div>
             </div>
           </div>

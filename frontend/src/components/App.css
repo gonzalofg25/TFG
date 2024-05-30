@@ -26,7 +26,7 @@ html, body {
   width: 500px;
   height: 500px;
   background: rgb(109,142,170);
-background: linear-gradient(36deg, rgba(109,142,170,1) 50%, rgba(33,3,221,1) 100%);
+  background: linear-gradient(36deg, rgba(109,142,170,1) 50%, rgba(33,3,221,1) 100%);
   justify-content: center;
   border-radius: 10%;
 }
@@ -94,6 +94,53 @@ background: linear-gradient(36deg, rgba(109,142,170,1) 50%, rgba(33,3,221,1) 100
   color: #f19706;
 }
 
+@media screen and (max-width:580px) {
+  #registro-formulario{
+    height: 450px;
+    width: 450px;
+  }
+
+  #formulario h1{
+    margin-top: 20px;
+    font-size: 25px;
+    margin-bottom: 20px;
+  }
+
+  .campo-texto,.submit-button,.login-button {
+    width: 300px;
+    height: 40px;
+  }
+}
+
+@media screen and (max-width:500px) {
+  #registro-formulario{
+    width: 84vw;
+    height: auto;
+  }
+
+  #formulario h1{
+    margin-top: 20px;
+    font-size: 25px;
+    margin-bottom: 20px;
+  }
+}
+
+@media screen and (max-width:400px){
+  .campo-texto,.submit-button,.login-button {
+    width: 70vw;
+    height: 33px;
+    border-radius: 5px;
+  }
+
+  .submit-button{
+    padding-bottom: 8vw;
+    font-size: 4.6vw;
+  }
+
+  #registro-formulario p{
+    font-size: 4vw;
+  }
+}
 /*-------------------------------------------------------------------------------------------------------------*/
 
 /* Estilos para el contenedor principal */
@@ -150,19 +197,6 @@ background: linear-gradient(36deg, rgba(109,142,170,1) 50%, rgba(33,3,221,1) 100
 
 .form-group input{
   width: 300px;
-}
-
-.back-button {
-  text-align: left;
-  margin-right: 100%;
-  background-color: red;
-  color: white;
-  font-size: 18px;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-bottom: 10px; /* Ajusta el margen según sea necesario */
 }
 
 /*---------------------------------------------------------------------------------------------------*/
@@ -354,6 +388,94 @@ background: linear-gradient(36deg, rgba(109,142,170,1) 50%, rgba(33,3,221,1) 100
 .admin-content form button[type="submit"]:hover {
   background-color: rgb(141, 0, 0);
 }
+
+.hamburger-menu {
+  display: none; /* Muestra el menú hamburguesa */
+  text-align: center; /* Centra horizontalmente el contenido */
+  margin: 20px auto;
+}
+
+.buttons {
+  display: none; /* Inicialmente oculto */
+}
+
+@media screen and (max-width:1500px) {
+  #admin-container{
+    margin: 0 10%;
+  }
+}
+
+@media screen and (max-width: 1100px) {
+  .horizontal-menu {
+    display: none; /* Oculta el menú horizontal */
+  }
+
+  .hamburger-menu {
+    display: block;
+    justify-content: center; /* Centra horizontalmente el contenido */
+    align-items: center; /* Centra verticalmente el contenido */
+    margin-top: 20px; /* Muestra el menú hamburguesa */
+  }
+
+  .hamburger-menu-icon {
+    display: inline-block;
+    cursor: pointer;
+    color: white;
+    font-size: 24px;
+    margin-right: 20px;
+  }
+
+  .hamburger-menu-dropdown {
+    display: none;
+    position: absolute;
+    top: 60px; /* Ajusta la posición del menú desplegable según tus necesidades */
+    right: 20px; /* Ajusta la posición del menú desplegable según tus necesidades */
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+  }
+
+  .hamburger-menu-dropdown a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+  }
+
+  .hamburger-menu-dropdown a:hover {
+    background-color: #f1f1f1;
+  }
+
+  .hamburger-menu:hover .hamburger-menu-dropdown {
+    display: block;
+  }
+
+  .buttons {
+    display: flex; /* Mostrar los botones debajo del menú hamburguesa cuando el ancho de la pantalla es menor o igual a 1100px */
+    flex-direction: column; /* Alinear verticalmente los botones */
+    align-items: center; /* Centrar horizontalmente los botones */
+  }
+
+  .buttons button {
+    width: 200px; /* Ancho fijo para todos los botones */
+    margin-bottom: 10px; /* Espaciado entre los botones */
+    color: #255881;
+    background-color: #9cc9d8;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-family: "Josefins", serif;
+    font-size: 17px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .buttons button:hover {
+    background-color: #609db1; /* Cambio de color al pasar el ratón sobre los botones */
+  }
+}
+
 
 /*------------------------------------------------------------------------------------------------------------------------------*/
 
@@ -601,12 +723,28 @@ background: linear-gradient(36deg, rgba(109,142,170,1) 50%, rgba(33,3,221,1) 100
 
 .review-cliente{
   font-family: 'Josefins',serif;
-  padding: 10px 16px;
-  background-color: #007BFF;
+  width: 200px;
+  height: 40px;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+}
+
+#review-enviar{
+  background-color: rgb(29, 110, 29);
+}
+
+#review-enviar:hover{
+  background-color: rgb(18, 70, 18);
+}
+
+#review-cancelar{
+  background-color: red;
+}
+
+#review-cancelar:hover{
+  background-color: rgb(172, 0, 0);
 }
 
 .cliente-content ul {

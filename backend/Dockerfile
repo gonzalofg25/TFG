@@ -1,10 +1,9 @@
-FROM node:20.10.0
+FROM node:21-alpine
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
 COPY . .
-RUN npm ci --production
+RUN npm install
 
-USER 1000
 EXPOSE 3000
-CMD ["node", "src/index.js"]
+CMD ["npm", "start"]

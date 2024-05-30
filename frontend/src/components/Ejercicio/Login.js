@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
+import { Link } from 'react-router-dom';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -75,6 +76,7 @@ const Login = () => {
           </div>
           {error && !redirected && <p id="error-message" className="error-message">{error}</p>} {/* Mostrar el mensaje solo si no se ha redirigido */}
           <button type="submit" className="login-button">Iniciar Sesión</button>
+          <p>¿No eres usuario? <Link to="/" id='enlace'>Crear usuario</Link></p>
         </div>
       </form>
     </div>

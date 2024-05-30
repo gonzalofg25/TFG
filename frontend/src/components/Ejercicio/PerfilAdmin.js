@@ -6,6 +6,8 @@ const AdminPage = () => {
   const [emailToDelete, setEmailToDelete] = useState('');
   const [users, setUsers] = useState([]);
   const [reviews, setReviews] = useState([]);
+  const [showButtons, setShowButtons] = useState(false);
+
   const token = localStorage.getItem('token');
 
   const toggleModal = async (modal) => {
@@ -86,6 +88,10 @@ const AdminPage = () => {
     window.location.href = '/';
   };
 
+  const handleHamburgerClick = () => {
+    setShowButtons(!showButtons); // Cambia el estado para mostrar/ocultar los botones
+  };
+
   return (
     <div id='admin'>
       <div id='admin-container'>
@@ -102,6 +108,30 @@ const AdminPage = () => {
           </button>
           <button id='cerrarsesion' onClick={handleLogout}>Cerrar Sesión</button>
         </nav>
+
+        <div className="hamburger-menu" onClick={handleHamburgerClick}>
+          <div className="hamburger-menu-icon">
+            ☰
+          </div>
+        </div>
+
+        {/* Botones que se mostrarán al hacer clic en el menú hamburguesa */}
+        {showButtons && (
+          <div className="buttons">
+            <button onClick={() => toggleModal('users')}>
+              {openModal === 'users' ? 'Ocultar Usuarios' : 'Ver Usuarios'}
+            </button>
+            <button onClick={() => toggleModal('delete')}>
+              {openModal === 'delete' ? 'Ocultar Eliminar Usuario' : 'Eliminar Usuario'}
+            </button>
+            <button onClick={() => toggleModal('reviews')}>
+              {openModal === 'reviews' ? 'Ocultar Valoraciones' : 'Ver Valoraciones'}
+            </button>
+            <button onClick={handleLogout}>Cerrar Sesión</button>
+          </div>
+        )}
+
+
 
         {openModal === 'users' && (
           <div className="admin">
