@@ -14,6 +14,7 @@ const BarberoPage = () => {
   const [newPassword, setNewPassword] = useState('');
   const [updateError, setUpdateError] = useState(null);
   const [updateSuccess, setUpdateSuccess] = useState(null);
+  const [showButtons, setShowButtons] = useState(false);
 
   useEffect(() => {
     const fetchClientes = async () => {
@@ -172,6 +173,10 @@ const BarberoPage = () => {
       alert('Error al completar la cita. Por favor, intenta nuevamente más tarde.');
     }
   }
+
+  const handleHamburgerClick = () => {
+    setShowButtons(!showButtons);
+  };
   
   return (
     <div id='barber'>
@@ -192,6 +197,30 @@ const BarberoPage = () => {
           </button>
           <button id='cerrarsesion' onClick={handleLogout}>Cerrar Sesión</button>
         </nav>
+
+        <div className="hamburger-menu" onClick={handleHamburgerClick}>
+          <div className="hamburger-menu-icon">
+            ☰
+          </div>
+        </div>
+
+        {showButtons && (
+          <div className="buttons">
+            <button onClick={() => handleShowSection('clientes')}>
+              {showSection === 'clientes' ? 'Ocultar clientes' : 'Obtener clientes'}
+            </button>
+            <button onClick={() => handleShowSection('citas')}>
+              {showSection === 'citas' ? 'Ocultar Citas' : 'Ver Citas'}
+            </button>
+            <button onClick={() => handleShowSection('reviews')}>
+              {showSection === 'reviews' ? 'Ocultar Valoraciones' : 'Ver Valoraciones'}
+            </button>
+            <button onClick={() => handleShowSection('update')}>
+              {showSection === 'update' ? 'Ocultar Actualización' : 'Actualizar Información'}
+            </button>
+            <button onClick={handleLogout}>Cerrar Sesión</button>
+          </div>
+        )}
 
         {showSection === 'update' && (
           <div className='barber'>

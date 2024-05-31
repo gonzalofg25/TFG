@@ -66,17 +66,13 @@ const Login = () => {
   return (
     <div className="login-container">
       <form className="login-form" onSubmit={handleSubmit}>
-        <div id='formulario-login' style={{ textAlign: 'left' }}>
+        <div id='formulario-login'>
           <h1 className="login-title">Iniciar Sesión</h1>
-          <div className="form-group">
-            <input className='campo-texto' type="email" id="email" placeholder='Email' value={email} onChange={(e) => setEmail(e.target.value)} />
-          </div>
-          <div className="form-group">
-            <input className='campo-texto' type="password" id="password" placeholder='Contraseña' value={password} onChange={(e) => setPassword(e.target.value)} />
-          </div>
+            <input className='campo-login' type="email" id="email" placeholder='Email' value={email} onChange={(e) => setEmail(e.target.value)} />          
+            <input className='campo-login' type="password" id="password" placeholder='Contraseña' value={password} onChange={(e) => setPassword(e.target.value)} />
           {error && !redirected && <p id="error-message" className="error-message">{error}</p>} {/* Mostrar el mensaje solo si no se ha redirigido */}
           <button type="submit" className="login-button">Iniciar Sesión</button>
-          <p>¿No eres usuario? <Link to="/" id='enlace'>Crear usuario</Link></p>
+          <p>¿No eres usuario? <Link to="/" id='enlace'> Crear usuario</Link></p>
         </div>
       </form>
     </div>

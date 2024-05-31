@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import Modal from 'react-modal';
 import Calendar from 'react-calendar';
+import { RiSettings2Line, RiDeleteBin6Line } from 'react-icons/ri';
 import 'react-calendar/dist/Calendar.css';
 
 Modal.setAppElement('#root');
@@ -37,6 +38,7 @@ const ClientePage = () => {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
   const [visibleSection, setVisibleSection] = useState('');
+  const [showButtons, setShowButtons] = useState(false);
   
 
   useEffect(() => {
@@ -412,6 +414,10 @@ const handleModifyAppointment = async (citaId) => {
       setVisibleSection('form');
     }
   };
+
+  const handleHamburgerClick = () => {
+    setShowButtons(!showButtons);
+  };
   
 
   return (
@@ -434,6 +440,31 @@ const handleModifyAppointment = async (citaId) => {
         </button>
         <button id='cerrarsesion' onClick={handleLogout}>Cerrar Sesión</button>
       </nav>
+
+      <div className="hamburger-menu" onClick={handleHamburgerClick}>
+        <div className="hamburger-menu-icon">
+          ☰
+        </div>
+      </div>
+
+      {showButtons && (
+        <div className="buttons">
+          <button onClick={handleShowBarbers}>
+            {visibleSection === 'barberos' ? 'Ocultar Barberos' : 'Mostrar Barberos'}
+          </button>
+          <button onClick={() => setModalIsOpen(true)}>Seleccionar cita</button>
+          <button onClick={handleViewAppointments}>
+            {visibleSection === 'citas' ? 'Ocultar Citas' : 'Ver Citas'}
+          </button>
+          <button onClick={handleOpenReviewSection}>
+            {visibleSection === 'review' ? 'Ocultar Valoración' : 'Valorar Barbero'}
+          </button>
+          <button onClick={handleShowForm}>
+            {visibleSection === 'form' ? 'Ocultar Actualización' : 'Actualizar información'}
+          </button>
+          <button onClick={handleLogout}>Cerrar Sesión</button>
+        </div>
+      )}
 
       
       {visibleSection === 'barberos' && (
@@ -466,23 +497,36 @@ const handleModifyAppointment = async (citaId) => {
         <div className='cliente'>
           <div className={`cliente-content ${visibleSection === 'citas' && citas.length > 0 ? 'fade-in' : ''}`}>
             <h3>Citas:</h3>
-            <ul>
-              {citas.map((cita, index) => (
-                <li key={index}>
-                  {cita.barber ? (
-                    <>
-                      <p>Barbero: {cita.barber.username}</p>
-                      <p>Título: {cita.title}</p>
-                      <p>Fecha: {new Date(new Date(cita.date).getTime() - (2 * 60 * 60 * 1000)).toLocaleString()}</p>
-                      <button onClick={() => handleModifyAppointment(cita._id)}>Modificar</button>
-                      <button onClick={() => handleCancelConfirmation(cita._id)}>Cancelar Cita</button>
-                    </>
-                  ) : (
-                    <p>Error: Información del barbero no disponible</p>
-                  )}
-                </li>
-              ))}
-            </ul>
+            <table>
+              <thead>
+                <tr>
+                  <th>Barbero</th>
+                  <th>Título</th>
+                  <th>Fecha</th>
+                  <th>Modificar</th>
+                  <th>Cancelar</th>
+                </tr>
+              </thead>
+              <tbody>
+                {citas.map((cita, index) => (
+                  <tr key={index}>
+                    <td>{cita.barber ? cita.barber.username : 'Información no disponible'}</td>
+                    <td>{cita.title}</td>
+                    <td>{new Date(new Date(cita.date).getTime() - (2 * 60 * 60 * 1000)).toLocaleString()}</td>
+                    <td>
+                      <button onClick={() => handleModifyAppointment(cita._id)}>
+                        <RiSettings2Line />
+                      </button>
+                    </td>
+                    <td>
+                      <button onClick={() => handleCancelConfirmation(cita._id)}>
+                        <RiDeleteBin6Line />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       )}
@@ -535,6 +579,7 @@ const handleModifyAppointment = async (citaId) => {
             <label>Título:</label>
             <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
           </div>
+          <br/>
           <div>
             <label>Descripción:</label>
             <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} />

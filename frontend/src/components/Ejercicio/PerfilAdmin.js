@@ -137,7 +137,7 @@ const AdminPage = () => {
           <div className="admin">
             <div className={`admin-content ${openModal === 'users' ? 'fade-in' : ''}`}>
               <h3>Lista de Usuarios</h3>
-              <table>
+              <table id='tabla-usuarios'>
                 <thead>
                   <tr>
                     <th>Username</th>
@@ -163,7 +163,7 @@ const AdminPage = () => {
           <div className="admin">
             <div className={`admin-content ${openModal === 'delete' ? 'fade-in' : ''}`}>
               <h3>Eliminar Usuario</h3>
-              <form onSubmit={handleDeleteUser}>
+              <form id='eliminar-admin' onSubmit={handleDeleteUser}>
                 <div>
                   <label>Email del Usuario a Eliminar:</label>
                   <input type="email" value={emailToDelete} onChange={(e) => setEmailToDelete(e.target.value)} />
@@ -178,7 +178,7 @@ const AdminPage = () => {
           <div className="admin">
             <div className={`admin-content ${openModal === 'reviews' ? 'fade-in' : ''}`}>
               <h3>Lista de Valoraciones</h3>
-              <table>
+              <table id='tabla-reviews'>
                 <thead>
                   <tr>
                     <th>Usuario</th>
