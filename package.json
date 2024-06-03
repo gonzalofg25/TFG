@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start:all": "cd backend && npm start & wait-on http://localhost:3000 && cd ../frontend && npm start"
+    "start:all": "cd backend && concurrently \"npm start\" \"cd ../frontend && npm start\""
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
