@@ -127,7 +127,7 @@ const AdminPage = () => {
             <button onClick={() => toggleModal('reviews')}>
               {openModal === 'reviews' ? 'Ocultar Valoraciones' : 'Ver Valoraciones'}
             </button>
-            <button onClick={handleLogout}>Cerrar Sesión</button>
+            <button id='cerrarsesion-hamburguer' onClick={handleLogout}>Cerrar Sesión</button>
           </div>
         )}
 

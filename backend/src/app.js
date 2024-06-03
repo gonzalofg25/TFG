@@ -6,11 +6,10 @@ import authRoutes from './routes/auth-routes.js';
 import userRoutes from './routes/user-router.js';
 import appointmentRoutes from './routes/appointment-routes.js';
 import reviewRoutes from './routes/review-routes.js'
-import cors from 'cors'; // Importa el middleware CORS
+import cors from 'cors';
 
 const app = express();
 
-// Middleware para permitir solicitudes CORS desde el dominio del frontend
 app.use(cors({
   origin: 'http://localhost:3001',
   methods: ['GET', 'POST','PUT','DELETE'],

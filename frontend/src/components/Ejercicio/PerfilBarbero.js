@@ -218,7 +218,7 @@ const BarberoPage = () => {
             <button onClick={() => handleShowSection('update')}>
               {showSection === 'update' ? 'Ocultar Actualización' : 'Actualizar Información'}
             </button>
-            <button onClick={handleLogout}>Cerrar Sesión</button>
+            <button id='cerrarsesion-hamburguer' onClick={handleLogout}>Cerrar Sesión</button>
           </div>
         )}
 

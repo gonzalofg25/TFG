@@ -515,7 +515,7 @@ html, body {
     width: 200px; /* Ancho fijo para todos los botones */
     margin-bottom: 10px; /* Espaciado entre los botones */
     color: #255881;
-    background-color: #9cc9d8;
+    background-color: #b3d1db;
     border: none;
     padding: 12px 30px;
     border-radius: 8px;
@@ -526,12 +526,23 @@ html, body {
   }
   
   .buttons button:hover {
-    background-color: #609db1; /* Cambio de color al pasar el ratón sobre los botones */
+    background-color: #609db1;
+    color:#002a4d;
   }
 
   .admin-content{
     height: 500px;
     overflow-x: auto;
+  }
+
+  #cerrarsesion-hamburguer{
+    color: #812525;
+    background-color: #d8b2b2;
+  }
+
+  #cerrarsesion-hamburguer:hover{
+    background-color: #c28484;
+    color: #570000;
   }
 }
 
@@ -565,6 +576,11 @@ html, body {
   .admin-content tr:hover {
     background-color: #ddd;
   }
+
+  #eliminar-admin input[type="email"] {
+    padding: 7px;
+    font-size: 16px;  
+  }
 }
 
 @media screen and (max-width:500px) {
@@ -574,7 +590,7 @@ html, body {
   }
   
   #eliminar-admin input[type="email"] {
-    padding: 10px;
+    padding: 5px;
     margin-bottom: 0;
     font-size: 3.5vw;
   }
@@ -978,6 +994,20 @@ html, body {
   margin-right: 10px;
 }
 
+#modal-usuario{
+  font-family: 'Josefins', serif;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
 @media screen and (max-width: 1100px) {
   .cliente-content{
     height: 500px;
@@ -1031,6 +1061,12 @@ html, body {
   #actualizar-cliente button {
     font-size: 3.4vw;
     padding: 15px 27px;
+  }
+}
+
+@media screen and (max-width:500px){
+  #modal-usuario, #modal-usuario select,.close-button{
+    font-size: 3.4vw;
   }
 }
 

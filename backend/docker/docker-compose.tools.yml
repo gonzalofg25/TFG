@@ -1,12 +1,8 @@
-version: '3.1'
-name: mongoose
+version: "3"
 services:
-  mongo:
-    image: mongo
-    restart: always
+  mongodb:
+    image: "mongo"
     ports:
-      - 27017:27017
+    - "27017:27017"
     volumes:
-      - mongo:/data/db
-volumes:
-  mongo:
+    - mongo-data:/data/db

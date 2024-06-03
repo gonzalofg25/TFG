@@ -184,7 +184,7 @@ const ClientePage = () => {
 
   const handleSelectBarber = async (barber) => {
     setBarberName(barber.username);
-    setShowReviewSection(false); // Oculta la sección de valoración al seleccionar un barbero
+    setShowReviewSection(false);
     const availableTimes = getAvailableTimes(date, barber.username);
     setAvailableTimes(availableTimes);
   };
@@ -285,7 +285,7 @@ const handleModifyAppointment = async (citaId) => {
         selectedDate.setHours(hours, minutes, 0, 0);
 
         if (isNaN(selectedDate.getTime())) {
-          throw new Error('Formato de fecha y hora no válido');
+          throw new Error('Error: No puedes modificar una cita para una fecha y hora que ya ha pasado.');
         }
 
         if (selectedDate <= currentDate) {
@@ -462,7 +462,7 @@ const handleModifyAppointment = async (citaId) => {
           <button onClick={handleShowForm}>
             {visibleSection === 'form' ? 'Ocultar Actualización' : 'Actualizar información'}
           </button>
-          <button onClick={handleLogout}>Cerrar Sesión</button>
+          <button id='cerrarsesion-hamburguer' onClick={handleLogout}>Cerrar Sesión</button>
         </div>
       )}
 
@@ -531,61 +531,68 @@ const handleModifyAppointment = async (citaId) => {
         </div>
       )}
 
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={() => setModalIsOpen(false)}
-        contentLabel="Seleccionar cita"
-      >
-        <h2>Seleccionar cita</h2>
-        <form onSubmit={handleSubmitAppointment}>
-          <div>
-            <label>Barbero:</label>
-            <select value={barberName} onChange={(e) => setBarberName(e.target.value)}>
-              <option value="">Seleccionar barbero</option>
-              {barberos.map((barbero, index) => (
-                <option key={index} value={barbero.username}>{barbero.username}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label>Fecha:</label>
-            <Calendar 
-              value={date} 
-              onChange={handleDateChange} 
-              tileDisabled={({ date }) => {
-                const today = new Date();
-                const dayOfWeek = date.getDay();
-                const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-                const isBeforeToday = date < today.setHours(0, 0, 0, 0);
-                return isWeekend || isBeforeToday;
-              }} 
-            />
-          </div>
-          {availableTimes.length > 0 ? (
-            <div>
-              <label>Horarios disponibles:</label>
-              <ul>
-                {availableTimes.map((time, index) => (
-                  <li key={index} onClick={() => handleTimeSelect(time)}>
-                    <button>{time}</button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ) : (
-            <p>No hay horarios disponibles para este barbero en esta fecha.</p>
-          )}
-          <div>
-            <label>Título:</label>
-            <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
-          </div>
-          <br/>
-          <div>
-            <label>Descripción:</label>
-            <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} />
-          </div>
-        </form>
-      </Modal>
+<Modal
+  isOpen={modalIsOpen}
+  onRequestClose={() => setModalIsOpen(false)}
+  contentLabel="Seleccionar cita"
+  id='modal-usuario'
+>
+  <button onClick={() => setModalIsOpen(false)} className="close-button">X</button>
+  <h2>Seleccionar cita</h2>
+  <br/>
+  <form onSubmit={handleSubmitAppointment}>
+    <div>
+      <label>Barbero:</label>
+      <select value={barberName} onChange={(e) => setBarberName(e.target.value)}>
+        <option value="">Seleccionar barbero</option>
+        {barberos.map((barbero, index) => (
+          <option key={index} value={barbero.username}>{barbero.username}</option>
+        ))}
+      </select>
+    </div>
+    <br/><br/>
+    <div>
+      <label>Fecha:</label>
+      <Calendar
+        id='calendario-citas'
+        className="responsive-calendar" 
+        value={date} 
+        onChange={handleDateChange} 
+        tileDisabled={({ date }) => {
+          const today = new Date();
+          const dayOfWeek = date.getDay();
+          const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+          const isBeforeToday = date < today.setHours(0, 0, 0, 0);
+          return isWeekend || isBeforeToday;
+        }} 
+      />
+    </div>
+    <br/><br/>
+    {availableTimes.length > 0 ? (
+      <div>
+        <label>Horarios disponibles:</label>
+        <ul>
+          {availableTimes.map((time, index) => (
+            <li key={index} onClick={() => handleTimeSelect(time)}>
+              <button>{time}</button>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ) : (
+      <p>No hay horarios disponibles para este barbero en esta fecha.</p>
+    )}
+    <div>
+      <label>Título:</label><br/>
+      <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
+    </div>
+    <br/>
+    <div>
+      <label>Descripción:</label><br/>
+      <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} />
+    </div>
+  </form>
+</Modal>
 
         {/* Sección para valorar barberos */}
         {visibleSection === 'review' && (
