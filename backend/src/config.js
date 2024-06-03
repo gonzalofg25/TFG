@@ -2,7 +2,7 @@ import 'dotenv/config';
 
 const Config = {
     SECRET: process.env.SECRET_KEY || 'products-api', // Cambio realizado
-    port: process.env.PORT ,
+    port: process.env.PORT || 8080,
     icon: {
        host: process.env.MONGODB_HOST,
        port: process.env.MONGODB_PORT,
