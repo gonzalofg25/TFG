@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { RiDeleteBin6Line } from 'react-icons/ri';
 import { useParams } from 'react-router-dom';
 
 const BarberoPage = () => {
@@ -228,7 +229,7 @@ const BarberoPage = () => {
               <h3>Actualizar Usuario</h3>
               <form id='actualizar-barbero' onSubmit={handleUpdateInfo}>
                 <div>
-                  <label htmlFor="newUsername">Nuevo Nombre de Usuario</label>
+                  <label htmlFor="newUsername">Nombre de Usuario</label>
                   <br/>
                   <input
                     type="text"
@@ -238,7 +239,7 @@ const BarberoPage = () => {
                   />
                 </div>
                 <div>
-                  <label htmlFor="newEmail">Nuevo Email</label>
+                  <label htmlFor="newEmail">Email</label>
                   <br/>
                   <input
                     type="email"
@@ -248,7 +249,7 @@ const BarberoPage = () => {
                   />
                 </div>
                 <div>
-                  <label htmlFor="newPassword">Nueva Contraseña</label>
+                  <label htmlFor="newPassword">Contraseña</label>
                   <br/>
                   <input
                     type="password"
@@ -316,7 +317,7 @@ const BarberoPage = () => {
                         <td>{formattedDate}</td>
                         <td>{formattedTime}</td>
                         <td>
-                          <button onClick={() => handleDeleteCita(cita._id)}>X</button>
+                          <button onClick={() => handleDeleteCita(cita._id)}><RiDeleteBin6Line /></button>
                         </td>
                         <td>
                           <button onClick={() => handleCompleteCita(cita._id)}>✔️</button>
