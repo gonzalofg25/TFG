@@ -1,0 +1,9 @@
+[build]
+  command = "npm run start:all"
+  publish = "build"
+
+[build.environment]
+  NODE_VERSION = "14"
+
+[cache]
+  paths = ["node_modules/**/*"]
