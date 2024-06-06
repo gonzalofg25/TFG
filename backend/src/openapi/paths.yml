@@ -1,6 +1,368 @@
-/ping:
-  get:
-    summary: pong
+/api/auth/signup:
+  post:
+    tags:
+    - Auth
+    summary: Crear Usuario
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              username:
+                type: string
+              email:
+                type: string
+              password:
+                type: string
+              roles:
+                type: string
+          example:
+            username: admin3
+            email: admin3@gmail.com
+            password: admin3
+            roles: admin
     responses:
       '200':
-        description: ping/pong
+        description: Usuario creado correctamente
+
+/api/auth/signin:
+  post:
+    tags:
+    - Auth
+    summary: Iniciar Sesión
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+              password:
+                type: string
+          example:
+            email: miguelito69@gmail.com
+            password: miguelito69
+    responses:
+      '200':
+        description: Sesión iniciada correctamente
+
+/api/user/barbers:
+  get:
+    tags:
+    - Cliente
+    summary: Usuarios barberos
+    parameters:
+    - in: header
+      name: authorization
+      required: true
+      schema:
+        type: string
+    responses:
+      '200':
+        description: Lista de barberos
+
+/api/user/clientes:
+  get:
+    tags:
+    - Barbero
+    summary: Usuarios clientes
+    parameters:
+    - in: header
+      name: Authorization
+      required: true
+      schema:
+        type: string
+    responses:
+      '200':
+        description: Lista de clientes
+
+/api/user/modificar:
+  put:
+    tags:
+    - Cliente Barbero
+    summary: Modificar usuario
+    parameters:
+    - in: header
+      name: Authorization
+      required: true
+      schema:
+        type: string
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              username:
+                type: string
+              email:
+                type: string
+              password:
+                type: string
+          example:
+            username: cliente11
+            email: cliente11@gmail.com
+            password: cliente11
+    responses:
+      '200':
+        description: Usuario modificado correctamente
+
+/api/user/listadmin:
+  get:
+    tags:
+    - Admin
+    summary: Lista de usuarios
+    parameters:
+    - in: header
+      name: authorization
+      required: true
+      schema:
+        type: string
+    responses:
+      '200':
+        description: Lista de usuarios administradores
+
+/api/user/borraradmin:
+  delete:
+    tags:
+    - Admin
+    summary: Borrar Usuario
+    parameters:
+    - in: header
+      name: Authorization
+      required: true
+      schema:
+        type: string
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+          example:
+            email: fran33@gmail.com
+    responses:
+      '200':
+        description: Usuario borrado correctamente
+
+/api/appoint/cita:
+  post:
+    tags:
+    - Cliente
+    summary: Crear cita
+    parameters:
+    - in: header
+      name: Authorization
+      required: true
+      schema:
+        type: string
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              barberName:
+                type: string
+              title:
+                type: string
+              date:
+                type: string
+              description:
+                type: string
+          example:
+            barberName: lobato88
+            title: Degradado
+            date: 2024-05-12T12:00
+            description: Pelaito shuipy
+    responses:
+      '200':
+        description: Cita creada correctamente
+
+/api/appoint/citasusuario:
+  get:
+    tags:
+    - Cliente
+    summary: Ver citas
+    parameters:
+    - in: header
+      name: Authorization
+      required: true
+      schema:
+        type: string
+    responses:
+      '200':
+        description: Lista de citas del usuario
+
+/api/appoint/citasbarbero:
+  get:
+    tags:
+    - Barbero
+    summary: Ver citas Barbero
+    parameters:
+    - in: header
+      name: Authorization
+      required: true
+      schema:
+        type: string
+    responses:
+      '200':
+        description: Lista de citas del barbero
+
+/api/appoint/cita/{citaId}:
+  put:
+    tags:
+      - Cliente
+    summary: Modificar cita
+    parameters:
+      - in: header
+        name: Authorization
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: citaId
+        required: true
+        schema:
+          type: string
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              title:
+                type: string
+              date:
+                type: string
+          example:
+            title: Suwayita
+            date: 2024-05-17T22:00
+    responses:
+      '200':
+        description: Cita modificada correctamente
+
+  delete:
+    tags:
+      - Cliente
+    summary: Cancelar cita
+    parameters:
+      - in: header
+        name: Authorization
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: citaId
+        required: true
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Cita cancelada correctamente
+
+
+/api/review/creareview:
+  post:
+    tags:
+    - Cliente
+    summary: Crear valoración
+    parameters:
+    - in: header
+      name: Authorization
+      required: true
+      schema:
+        type: string
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              barberUsername:
+                type: string
+              rating:
+                type: integer
+              comment:
+                type: string
+          example:
+            barberUsername: miguelito69
+            rating: 5
+            comment: Excelente servicio, muy profesional.
+    responses:
+      '200':
+        description: Valoración creada correctamente
+
+/api/review/barber/reviews:
+  get:
+    tags:
+    - Barbero
+    summary: Ver reviews
+    parameters:
+    - in: header
+      name: Authorization
+      required: true
+      schema:
+        type: string
+    responses:
+      '200':
+        description: Lista de reviews del barbero
+
+/api/review/admin:
+  get:
+    tags:
+    - Admin
+    summary: Citas admin
+    parameters:
+    - in: header
+      name: Authorization
+      required: true
+      schema:
+        type: string
+    responses:
+      '200':
+        description: Lista de citas para el admin
+
+/api/review/media/{username}:
+  get:
+    tags:
+    - Cliente
+    summary: Ver Valoración media
+    parameters:
+    - in: header
+      name: Authorization
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: username
+      required: true
+      schema:
+        type: string
+    responses:
+      '200':
+        description: Valoración media del usuario
+
+/api/appoint/citabarbero/{citaId}:
+  delete:
+    tags:
+    - Barbero
+    summary: Borrar cita
+    parameters:
+    - in: header
+      name: Authorization
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: citaId
+      required: true
+      schema:
+        type: string
+    responses:
+      '200':
+        description: Cita borrada correctamente

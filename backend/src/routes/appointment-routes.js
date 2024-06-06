@@ -10,6 +10,5 @@ router.get('/citasbarbero',checkToken,verCitasDelBarbero)
 router.put('/cita/:citaId',checkToken,modificarCita)
 router.delete('/cita/:citaId',checkToken,cancelarCita)
 router.delete('/citabarbero/:citaId',checkToken, cancelarCitaBarbero)
-router.get('/citasbarbero/:barberName/:date',checkToken,getCitasBarberoEnFecha);
 
 export default router;
