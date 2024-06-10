@@ -6,7 +6,7 @@
     "build:all": "npm run build:backend && npm run build:frontend"
   },
   "start":{
-    "startcommand": "start:all"
+    "startcommand": "cd backend && concurrently \"npm start\""
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
