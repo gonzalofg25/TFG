@@ -1,2 +1,6 @@
 [build]
-  functions = "src"
+  command = "npm install --legacy-peer-deps && npm run build"
+  publish = "frontend/build"
+
+[functions]
+  directory = "frontend/src"
