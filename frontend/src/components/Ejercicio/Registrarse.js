@@ -16,17 +16,6 @@ function SignUpForm() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleCheckboxChange = (e) => {
-    const { value, checked } = e.target;
-    let updatedRoles = [...formData.roles];
-    if (checked) {
-      updatedRoles.push(value);
-    } else {
-      updatedRoles = updatedRoles.filter(role => role !== value);
-    }
-    setFormData({ ...formData, roles: updatedRoles });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Validación de campos obligatorios
@@ -61,6 +50,11 @@ function SignUpForm() {
     }
   };
 
+  const handleRadioChange = (e) => {
+    const { value } = e.target;
+    setFormData({ ...formData, roles: [value] });
+  };
+
   return (
     <div id="registro-container">
   <form id="registro-formulario" onSubmit={handleSubmit}>
@@ -71,11 +65,11 @@ function SignUpForm() {
     <input className="campo-texto" type="password" name="password" placeholder="Contraseña" onChange={handleChange} />
     <div className="roles-container">
       <label>
-        <input type="checkbox" name="roles" value="cliente" onChange={handleCheckboxChange} />
+        <input type="radio" name="roles" value="cliente" onChange={handleRadioChange} />
         Cliente
       </label>
       <label>
-        <input type="checkbox" name="roles" value="barbero" onChange={handleCheckboxChange} />
+        <input type="radio" name="roles" value="barbero" onChange={handleRadioChange} />
         Barbero
       </label>
     </div>
