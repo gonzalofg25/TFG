@@ -20,7 +20,7 @@ const BarberoPage = () => {
   useEffect(() => {
     const fetchClientes = async () => {
       try {
-        const response = await axios.get('http://https://tfg-ndno.onrender.com/api/user/clientes', {
+        const response = await axios.get('https://tfg-ndno.onrender.com/api/user/clientes', {
           headers: {
             Authorization: `${token}`
           }
@@ -33,7 +33,7 @@ const BarberoPage = () => {
 
     const fetchCitas = async () => {
       try {
-        const response = await axios.get('http://https://tfg-ndno.onrender.com/api/appoint/citasbarbero', {
+        const response = await axios.get('https://tfg-ndno.onrender.com/api/appoint/citasbarbero', {
           headers: {
             Authorization: `${token}`
           }
@@ -53,7 +53,7 @@ const BarberoPage = () => {
 
     const fetchReviews = async () => {
       try {
-        const response = await axios.get('http://https://tfg-ndno.onrender.com/api/review/barber/reviews', {
+        const response = await axios.get('https://tfg-ndno.onrender.com/api/review/barber/reviews', {
           headers: {
             Authorization: `${token}`
           }
@@ -88,7 +88,7 @@ const BarberoPage = () => {
       if (newEmail.trim()) data.email = newEmail;
       if (newPassword.trim()) data.password = newPassword;
 
-      const response = await axios.put('http://https://tfg-ndno.onrender.com/api/user/modificar', data, {
+      const response = await axios.put('https://tfg-ndno.onrender.com/api/user/modificar', data, {
         headers: {
           Authorization: `${token}`
         }
@@ -132,7 +132,7 @@ const BarberoPage = () => {
       }
   
       console.log(`Intentando eliminar cita con ID: ${citaId}`);
-      const response = await axios.delete(`http://https://tfg-ndno.onrender.com/api/appoint/citabarbero/${citaId}`, {
+      const response = await axios.delete(`https://tfg-ndno.onrender.com/api/appoint/citabarbero/${citaId}`, {
         headers: {
           Authorization: `${token}`
         }
@@ -158,7 +158,7 @@ const BarberoPage = () => {
       }
   
       console.log(`Marcar cómo completada la cita con ID: ${citaId}`);
-      const response = await axios.delete(`http://https://tfg-ndno.onrender.com/api/appoint/citabarbero/${citaId}`, {
+      const response = await axios.delete(`https://tfg-ndno.onrender.com/api/appoint/citabarbero/${citaId}`, {
         headers: {
           Authorization: `${token}`
         }

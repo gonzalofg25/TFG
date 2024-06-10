@@ -44,7 +44,7 @@ const ClientePage = () => {
   useEffect(() => {
     const fetchBarbers = async () => {
       try {
-        const response = await axios.get('http://https://tfg-ndno.onrender.com/api/user/barbers', {
+        const response = await axios.get('https://tfg-ndno.onrender.com/api/user/barbers', {
           headers: {
             Authorization: `${token}`
           }
@@ -54,7 +54,7 @@ const ClientePage = () => {
     
         const barbersData = await Promise.all(validBarbers.map(async (barber) => {
           try {
-            const ratingResponse = await axios.get(`http://https://tfg-ndno.onrender.com/api/review/media/${barber.username}`, {
+            const ratingResponse = await axios.get(`https://tfg-ndno.onrender.com/api/review/media/${barber.username}`, {
               headers: {
                 Authorization: `${token}`
               }
@@ -111,7 +111,7 @@ const ClientePage = () => {
       };
   
       await axios.put(
-        'http://https://tfg-ndno.onrender.com/api/user/modificar',
+        'https://tfg-ndno.onrender.com/api/user/modificar',
         data,
         {
           headers: {
@@ -165,7 +165,7 @@ const ClientePage = () => {
         description: description
       };
   
-      await axios.post('http://https://tfg-ndno.onrender.com/api/appoint/cita', appointmentData, {
+      await axios.post('https://tfg-ndno.onrender.com/api/appoint/cita', appointmentData, {
         headers: {
           Authorization: `${token}`
         }
@@ -239,7 +239,7 @@ const ClientePage = () => {
       if (visibleSection === 'citas') {
         setVisibleSection('');
       } else {
-        const response = await axios.get('http://https://tfg-ndno.onrender.com/api/appoint/citasusuario', {
+        const response = await axios.get('https://tfg-ndno.onrender.com/api/appoint/citasusuario', {
           headers: {
             Authorization: `${token}`
           }
@@ -314,7 +314,7 @@ const handleModifyAppointment = async (citaId) => {
           date: selectedDate.toISOString(),
         };
 
-        const response = await axios.put(`http://https://tfg-ndno.onrender.com/api/appoint/cita/${citaId}`, updatedData, {
+        const response = await axios.put(`https://tfg-ndno.onrender.com/api/appoint/cita/${citaId}`, updatedData, {
           headers: {
             Authorization: `${token}`
           }
@@ -355,7 +355,7 @@ const handleModifyAppointment = async (citaId) => {
 
   const handleCancelAppointment = async (citaId) => {
     try {
-      await axios.delete(`http://https://tfg-ndno.onrender.com/api/appoint/cita/${citaId}`, {
+      await axios.delete(`https://tfg-ndno.onrender.com/api/appoint/cita/${citaId}`, {
         headers: {
           Authorization: `${token}`
         }
@@ -392,7 +392,7 @@ const handleModifyAppointment = async (citaId) => {
         comment: comment
       };
   
-      await axios.post('http://https://tfg-ndno.onrender.com/api/review/creareview', reviewData, {
+      await axios.post('https://tfg-ndno.onrender.com/api/review/creareview', reviewData, {
         headers: {
           Authorization: `${token}`
         }

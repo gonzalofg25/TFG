@@ -29,7 +29,7 @@ function SignUpForm() {
       return;
     }
     try {
-      const response = await axios.post('http://https://tfg-ndno.onrender.com/api/auth/signup', formData);
+      const response = await axios.post('https://tfg-ndno.onrender.com/api/auth/signup', formData);
       setErrorMessage('');
       console.log('Respuesta del servidor:', response.data);
       // Muestra una alerta con el mensaje de éxito

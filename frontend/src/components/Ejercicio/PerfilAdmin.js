@@ -19,7 +19,7 @@ const AdminPage = () => {
     } else {
       if (modal === 'users') {
         try {
-          const response = await axios.get('http://https://tfg-ndno.onrender.com/api/user/listadmin', {
+          const response = await axios.get('https://tfg-ndno.onrender.com/api/user/listadmin', {
             headers: {
               Authorization: `${token}`
             }
@@ -30,7 +30,7 @@ const AdminPage = () => {
         }
       } else if (modal === 'reviews') {
         try {
-          const response = await axios.get('http://https://tfg-ndno.onrender.com/api/review/admin', {
+          const response = await axios.get('https://tfg-ndno.onrender.com/api/review/admin', {
             headers: {
               Authorization: `${token}`
             }
@@ -55,7 +55,7 @@ const AdminPage = () => {
     if (confirmDelete) {
       try {
         const response = await axios.delete(
-          'http://https://tfg-ndno.onrender.com/api/user/borraradmin',
+          'https://tfg-ndno.onrender.com/api/user/borraradmin',
           {
             headers: {
               Authorization: `${token}`
