@@ -3,7 +3,8 @@
     "start:all": "cd backend && concurrently \"npm start\" \"cd ../frontend && npm start\"",
     "build:backend": "cd backend && npm install && npm run build",
     "build:frontend": "cd frontend && npm install && npm run build",
-    "build:all": "npm run build:backend && npm run build:frontend"
+    "build:all": "npm run build:backend && npm run build:frontend",
+    "build": "npm install && npm run build"
   },
   "start":{
     "startcommand": "cd backend && concurrently \"npm start\""
