@@ -11,7 +11,7 @@ import cors from 'cors';
 const app = express();
 
 app.use(cors({
-  origin: 'http://localhost:3001',
+  origin: 'https://resonant-lebkuchen-745e2c.netlify.app/',
   methods: ['GET', 'POST','PUT','DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
