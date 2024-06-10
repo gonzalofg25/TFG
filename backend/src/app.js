@@ -12,6 +12,7 @@ const app = express();
 
 app.use(cors({
   origin: 'https://resonant-lebkuchen-745e2c.netlify.app/',
+  optionsSuccessStatus: 200,
   methods: ['GET', 'POST','PUT','DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
