@@ -1,9 +1,2 @@
 [build]
-  command = "npm run start:all"
-  publish = "frontend/build"
-
-[build.environment]
-  NODE_VERSION = "14"
-
-[cache]
-  paths = ["node_modules/**/*"]
+  functions = "src"

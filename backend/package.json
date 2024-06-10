@@ -29,6 +29,7 @@
     "mongoose": "^8.3.3",
     "morgan": "^1.10.0",
     "react-scripts": "^5.0.1",
+    "serverless": "^4.0.35",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "winston": "^3.11.0"
