@@ -10,7 +10,7 @@ import cors from 'cors';
 
 const app = express();
 
-const allowedOrigins = ['http://localhost:3001', 'https://resonant-lebkuchen-745e2c.netlify.app','http://resonant-lebkuchen-745e2c.netlify.app', 'https://tfg-ndno.onrender.com', 'http://tfg-ndno.onrender.com'];
+const allowedOrigins = ['http://localhost:3001', 'https://resonant-lebkuchen-745e2c.netlify.app','http://resonant-lebkuchen-745e2c.netlify.app', 'https://tfg-ndno.onrender.com', 'http://tfg-ndno.onrender.com', '*'];
 
 app.use(cors({
   origin: function(origin, callback){
