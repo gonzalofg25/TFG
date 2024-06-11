@@ -10,9 +10,18 @@ import cors from 'cors';
 
 const app = express();
 
+const allowedOrigins = ['http://localhost:3001', 'https://resonant-lebkuchen-745e2c.netlify.app/'];
+
 app.use(cors({
-  origin: 'http://localhost:3001',
-  methods: ['GET', 'POST','PUT','DELETE'],
+  origin: function(origin, callback){
+    if(!origin) return callback(null, true);
+    if(allowedOrigins.indexOf(origin) === -1){
+      var msg = 'El origen ' + origin + ' no está permitido por la política de CORS';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
