@@ -5,9 +5,3 @@
 
 [functions]
   directory = "frontend/functions"
-
-[[redirects]]
-  force = true
-  front = /"loquesea"
-  status = 200
-  to = "https://tfg-ndno.onrender.com/api/auth/signin"
