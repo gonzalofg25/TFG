@@ -10,7 +10,7 @@ import cors from 'cors';
 
 const app = express();
 
-const allowedOrigins = ['http://localhost:3001', 'https://relaxed-pixie-b743c4.netlify.app'];
+const allowedOrigins = ['http://localhost:3001', 'https://resonant-lebkuchen-745e2c.netlify.app'];
 
 app.use(cors({
   origin: function(origin, callback){
