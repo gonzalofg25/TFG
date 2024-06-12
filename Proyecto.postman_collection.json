@@ -1,0 +1,944 @@
+{
+	"info": {
+		"_postman_id": "cc1437cd-0f19-408c-9a57-17bd8c156536",
+		"name": "Proyecto",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34642170"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Iniciar Sesión",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response should contain token\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property(\"token\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"miguelito69@gmail.com\",\r\n    \"password\": \"miguelito69\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/signin",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"signin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Usuario",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response should contain success message\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.message).to.eql(\"User registered successfully\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"cliente33\",\r\n    \"email\": \"cliente33@gmail.com\",\r\n    \"password\": \"cliente3\",\r\n    \"roles\": \"cliente\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/signup",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Clientes",
+			"item": [
+				{
+					"name": "Usuarios barberos",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response should contain an array of barberos\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.be.an(\"array\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NDY0NTViZDhjNWEwYjYxMTc2ZDE5OSIsInJvbGVzIjpbImNsaWVudGUiXSwidXNlcm5hbWUiOiJnb2FsaXRvMjUiLCJpYXQiOjE3MTY0NzkwNjIsImV4cCI6MTcxNjU2NTQ2Mn0.5OzHUa6UD1YrUFbjcZlskJ5rJUFRvpB7QHlpeGvmb4Y",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/user/barbers",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"barbers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Modificar usuario",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response should contain success message\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.message).to.eql(\"Usuario actualizado correctamente\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MzlmOTBkZjQ5MWUxNTFmNGVlNTAyNCIsInJvbGVzIjpbImNsaWVudGUiXSwidXNlcm5hbWUiOiJjbGllbnRlMSIsImlhdCI6MTcxNTMyMzk1OCwiZXhwIjoxNzE1NDEwMzU4fQ.tMHTR3KKhDCYpWG9EHBub9dZlSU3eF53G_t65YpXpXM",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"username\":\"cliente11\",\r\n   \"email\":\"cliente11@gmail.com\",\r\n   \"password\":\"cliente11\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/user/modificar",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"modificar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear cita",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response should contain success message and appointment details\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.message).to.eql(\"Cita seleccionada con éxito\");\r",
+									"    pm.expect(jsonData).to.have.property(\"appointment\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2M2RlYmJlZTA1ZGNhZGNkNTdjOTFiOCIsInJvbGVzIjpbImNsaWVudGUiXSwidXNlcm5hbWUiOiJnb2FsaXRvMjUiLCJpYXQiOjE3MTUzNTQ2NTMsImV4cCI6MTcxNTQ0MTA1M30.G-a7-HkCZeq7xDIKK-ZE5fPNsklrAjf1k6X0G30jbfk",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"barberName\": \"lobato88\",\r\n    \"title\": \"Degradado\",\r\n    \"date\": \"2024-05-12T12:00\",\r\n    \"description\": \"Pelaito shuipy\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/appoint/cita",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"appoint",
+								"cita"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ver citas",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response should contain user appointments\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property(\"citasUsuario\");\r",
+									"    pm.expect(jsonData.citasUsuario).to.be.an(\"array\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2M2E0ODcyYzFlMGZjMDMzM2JjYmEwZCIsInJvbGVzIjpbImJhcmJlcm8iXSwidXNlcm5hbWUiOiJtaWd1ZWxpdG82OSIsImlhdCI6MTcxNTYxODY5MSwiZXhwIjoxNzE1NzA1MDkxfQ.VWhs8zVMXiY2fEKVvqnynf1h8gyadYuLFFORb72FluM",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/appoint/citasusuario",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"appoint",
+								"citasusuario"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Modificar cita",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response should contain success message and updated appointment details\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.message).to.eql(\"Cita modificada con éxito\");\r",
+									"    pm.expect(jsonData).to.have.property(\"cita\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MzlmOTFjZjQ5MWUxNTFmNGVlNTAyNyIsInJvbGVzIjpbImNsaWVudGUiXSwidXNlcm5hbWUiOiJjbGllbnRlMiIsImlhdCI6MTcxNTc4NjgxOCwiZXhwIjoxNzE1ODczMjE4fQ.-UOyCi9ZIQIQ_FEedL6kxivDM92a3IfMeg3xAbXTtWE",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\": \"Suwayita\",\r\n  \"date\": \"2024-05-17T22:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/appoint/cita/664486e2a200344da45249a1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"appoint",
+								"cita",
+								"664486e2a200344da45249a1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear valoración",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response should contain success message\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.message).to.eql(\"Revisión creada exitosamente.\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NDY0NTViZDhjNWEwYjYxMTc2ZDE5OSIsInJvbGVzIjpbImNsaWVudGUiXSwidXNlcm5hbWUiOiJnb2FsaXRvMjUiLCJpYXQiOjE3MTU5MzkwNjksImV4cCI6MTcxNjAyNTQ2OX0.6gF-KpSSn35iGmEY-iKmtcuVxcuVuasCMhNCctu9piU",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"barberUsername\": \"miguelito69\",\r\n    \"rating\": 5,\r\n    \"comment\": \"Excelente servicio, muy profesional.\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/review/creareview",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"review",
+								"creareview"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ver Valoración media",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response should contain average rating and total votes\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property(\"averageRating\");\r",
+									"    pm.expect(jsonData).to.have.property(\"totalVotes\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NDY0NTViZDhjNWEwYjYxMTc2ZDE5OSIsInJvbGVzIjpbImNsaWVudGUiXSwidXNlcm5hbWUiOiJnb2FsaXRvMjUiLCJpYXQiOjE3MTY0NzkwNjIsImV4cCI6MTcxNjU2NTQ2Mn0.5OzHUa6UD1YrUFbjcZlskJ5rJUFRvpB7QHlpeGvmb4Y",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/review/media/miguelito69",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"review",
+								"media",
+								"miguelito69"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancelar cita",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response should contain success message\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.message).to.eql(\"Cita cancelada con éxito\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}api/appoint/cita/${citaId}",
+							"host": [
+								"{{baseUrl}}api"
+							],
+							"path": [
+								"appoint",
+								"cita",
+								"${citaId}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Lista de usuarios",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response should contain an array of usuarios\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.be.an(\"array\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MzlmOWFkZjQ5MWUxNTFmNGVlNTA0OCIsInJvbGVzIjpbImFkbWluIl0sInVzZXJuYW1lIjoiYWRtaW4zIiwiaWF0IjoxNzE1MzM1MjE2LCJleHAiOjE3MTU0MjE2MTZ9.k1I5svqvAu0dlUlUIxs-ypdrvPRtMQCkh5fkCsHaYRY",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/user/listadmin",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"listadmin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Borrar Usuario",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response should contain success message\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.message).to.eql(\"Usuario eliminado exitosamente\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MzlmOWE1ZjQ5MWUxNTFmNGVlNTA0NSIsInJvbGVzIjpbImFkbWluIl0sInVzZXJuYW1lIjoiYWRtaW4yIiwiaWF0IjoxNzE1MzI5NTQzLCJleHAiOjE3MTU0MTU5NDN9.kNsWDj3IsR6cYIUyh4fkhcRaGSsTip5lO1Ehi23NdJY",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"fran33@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/user/borraradmin",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"borraradmin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Review admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response should contain an array of reviews\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.be.an(\"array\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NGEwZjA1NjM2NjUxNGYyYzY3YTI3NSIsInJvbGVzIjpbImFkbWluIl0sInVzZXJuYW1lIjoiYWRtaW4yIiwiaWF0IjoxNzE2NDc5MDE5LCJleHAiOjE3MTY1NjU0MTl9.rVJaDhn2JVefYfw1msKMxU2UApHwKRvGbFKPhpA4l4I",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/review/admin",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"review",
+								"admin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Borrar cita",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response should contain success message\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.message).to.eql(\"Cita cancelada con éxito\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NDY0NTQ5ZDhjNWEwYjYxMTc2ZDE5NiIsInJvbGVzIjpbImJhcmJlcm8iXSwidXNlcm5hbWUiOiJtaWd1ZWxpdG82OSIsImlhdCI6MTcxNjY1NjMwMiwiZXhwIjoxNzE2NzQyNzAyfQ.GLhqn-_gGN0wNUdBgoGoT8ShHv2wp7vLq0y8jUO7xwg",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/appoint/citabarbero/6650c17e6c65f0b434b73290",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"appoint",
+								"citabarbero",
+								"6650c17e6c65f0b434b73290"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Barbero",
+			"item": [
+				{
+					"name": "Ver reviews",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response should contain an array of reviews\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.be.an(\"array\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NDY0NTQ5ZDhjNWEwYjYxMTc2ZDE5NiIsInJvbGVzIjpbImJhcmJlcm8iXSwidXNlcm5hbWUiOiJtaWd1ZWxpdG82OSIsImlhdCI6MTcxNjEyODU1OCwiZXhwIjoxNzE2MjE0OTU4fQ.paooOlCFSsEkS1IeGPb97rECKEoTZ7i_JPlte9P0tU4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/api/review/barber/reviews",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"review",
+								"barber",
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ver citas Barbero",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response should contain barber appointments\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property(\"citasBarbero\");\r",
+									"    pm.expect(jsonData.citasBarbero).to.be.an(\"array\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2M2E0ODcyYzFlMGZjMDMzM2JjYmEwZCIsInJvbGVzIjpbImJhcmJlcm8iXSwidXNlcm5hbWUiOiJtaWd1ZWxpdG82OSIsImlhdCI6MTcxNTYxODY5MSwiZXhwIjoxNzE1NzA1MDkxfQ.VWhs8zVMXiY2fEKVvqnynf1h8gyadYuLFFORb72FluM",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/appoint/citasbarbero",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"appoint",
+								"citasbarbero"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Usuarios clientes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response should contain an array of clientes\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.be.an(\"array\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MzlmOTZjZjQ5MWUxNTFmNGVlNTAzNiIsInJvbGVzIjpbImJhcmJlcm8iXSwidXNlcm5hbWUiOiJiYXJiZXJvMiIsImlhdCI6MTcxNTUyODk3MCwiZXhwIjoxNzE1NjE1MzcwfQ.owkA9FM2zXiXu5JEuXkfAVcT4W8qXvkMsOCYsr10Eu8",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/user/clientes",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"clientes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Modificar usuario",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response should contain success message\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.message).to.eql(\"Usuario actualizado correctamente\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MzlmOTBkZjQ5MWUxNTFmNGVlNTAyNCIsInJvbGVzIjpbImNsaWVudGUiXSwidXNlcm5hbWUiOiJjbGllbnRlMSIsImlhdCI6MTcxNTMyMzk1OCwiZXhwIjoxNzE1NDEwMzU4fQ.tMHTR3KKhDCYpWG9EHBub9dZlSU3eF53G_t65YpXpXM",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"username\":\"cliente11\",\r\n   \"email\":\"cliente11@gmail.com\",\r\n   \"password\":\"cliente11\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/user/modificar",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"modificar"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
