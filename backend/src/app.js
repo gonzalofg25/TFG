@@ -10,7 +10,7 @@ import cors from 'cors';
 
 const app = express();
 
-const allowedOrigins = ['http://localhost:3001', 'https://barberdates.netlify.app','http://barberdates.netlify.app', 'https://tfg-ndno.onrender.com', 'http://tfg-ndno.onrender.com', '*', 'https://66688cfac46ea2166dbc26ca--barberdates.netlify.app'];
+const allowedOrigins = ['http://localhost:3001', 'https://barberdates.netlify.app','http://barberdates.netlify.app', 'https://tfg-ndno.onrender.com', 'http://tfg-ndno.onrender.com', '*', 'https://66688cfac46ea2166dbc26ca--barberdates.netlify.app','https://666b0562b368de45e5ac9d93--barberdates.netlify.app'];
 
 app.use(cors({
   origin: function(origin, callback){
