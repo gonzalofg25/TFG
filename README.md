@@ -44,60 +44,59 @@ La estructura de la base de datos está diseñada en MongoDB, con un modelo rela
 ### Backend
 La estructura de carpetas para el backend es la siguiente:
 
-\`\`\`
+```plaintext
 backend/
 ├── src/
 │   ├── config/
 │   │   └── morgan.js
 │   ├── controllers/
-│   │   └── appointmentController.js
-│   │   └── authController.js
-│   │   └── reviewController.js
+│   │   ├── appointmentController.js
+│   │   ├── authController.js
+│   │   ├── reviewController.js
 │   │   └── users-controller.js
 │   ├── loaders/
-│   │   └── express-loader.js
-│   │   └── index.js
+│   │   ├── express-loader.js
+│   │   ├── index.js
 │   │   └── mongodb-loader.js
 │   ├── middlewares/
-│   │   └── auth-middleware.js
-│   │   └── error-middleware.js
+│   │   ├── auth-middleware.js
+│   │   ├── error-middleware.js
 │   │   └── query-middleware.js
 │   ├── models/
-│   │   └── Appointment.js
-│   │   └── Review.js
+│   │   ├── Appointment.js
+│   │   ├── Review.js
 │   │   └── User.js
 │   ├── openapi/
-│   │   └── examples.yml
-│   │   └── index.js
-│   │   └── paths.yml
-│   │   └── responses.yml
-│   │   └── schemas.yml
+│   │   ├── examples.yml
+│   │   ├── index.js
+│   │   ├── paths.yml
+│   │   ├── responses.yml
+│   │   ├── schemas.yml
 │   │   └── security.yml
 │   ├── routes/
-│   │   └── appointment-routes.js
-│   │   └── auth-routes.js
-│   │   └── index.js
-│   │   └── review-routes.js
+│   │   ├── appointment-routes.js
+│   │   ├── auth-routes.js
+│   │   ├── index.js
+│   │   ├── review-routes.js
 │   │   └── user-router.js
 │   ├── services/
-│   │   └── appointmentService.js
-│   │   └── authService.js
+│   │   ├── appointmentService.js
+│   │   ├── authService.js
 │   │   └── user-db-services.js
 │   ├── utils/
-│   │   └── encrypt.js
-│   │   └── index.js
-│   │   └── logger.js
+│   │   ├── encrypt.js
+│   │   ├── index.js
+│   │   ├── logger.js
 │   │   └── pagination.js
 │   ├── app.js
 │   ├── config.js
-│   ├── index.js
+│   └── index.js
 ├── .env
 ├── .env.template
 ├── .editorconfig
 ├── eslintrc.json
 ├── package.json
-├── package-lock.json
-\`\`\`
+└── package-lock.json
 
 ### Frontend
 La estructura de carpetas para el frontend es la siguiente:
@@ -109,15 +108,15 @@ frontend/
 ├── src/
 │   ├── components/
 │   │   ├── Ejercicio/
-│   │   │   └── Login.js
-│   │   │   └── PerfilAdmin.js
-│   │   │   └── PerfilBarbero.js
-│   │   │   └── PerfilUsuario.js
+│   │   │   ├── Login.js
+│   │   │   ├── PerfilAdmin.js
+│   │   │   ├── PerfilBarbero.js
+│   │   │   ├── PerfilUsuario.js
 │   │   │   └── Registrarse.js
 │   │   ├── App.css
 │   │   └── App.js
 │   ├── resources/
-│   │   └── JosefinSans-Semibold.ttf
+│   │   ├── JosefinSans-Semibold.ttf
 │   │   └── logo.svg
 │   ├── App.test.js
 │   ├── index.css
@@ -126,7 +125,7 @@ frontend/
 │   └── setupTests.js
 ├── .env
 ├── package.json
-├── package-lock.json
+└── package-lock.json
 \`\`\`
 
 ## Pruebas
