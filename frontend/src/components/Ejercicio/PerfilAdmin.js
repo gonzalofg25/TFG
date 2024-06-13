@@ -188,14 +188,14 @@ const AdminPage = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {reviews.map((review, index) => (
-                    <tr key={index}>
-                      <td>{review.user.username}</td>
-                      <td>{review.barber.username}</td>
-                      <td>{review.rating}</td>
-                      <td>{review.comment}</td>
-                    </tr>
-                  ))}
+                {reviews.map((review, index) => (
+                <tr key={index}>
+                  <td>{review.user?.username || 'N/A'}</td>
+                  <td>{review.barber?.username || 'N/A'}</td>
+                  <td>{review?.rating || 'N/A'}</td>
+                  <td>{review?.comment || 'N/A'}</td>
+                </tr>
+              ))}
                 </tbody>
               </table>
             </div>
