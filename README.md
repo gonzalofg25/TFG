@@ -97,11 +97,11 @@ backend/
 ├── eslintrc.json
 ├── package.json
 └── package-lock.json
-
+```
 ### Frontend
 La estructura de carpetas para el frontend es la siguiente:
 
-\`\`\`
+```plaintext
 frontend/
 ├── public/
 │   └── index.html
@@ -126,7 +126,7 @@ frontend/
 ├── .env
 ├── package.json
 └── package-lock.json
-\`\`\`
+```
 
 ## Pruebas
 
